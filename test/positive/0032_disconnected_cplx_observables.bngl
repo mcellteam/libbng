@@ -1,0 +1,10 @@
+# OK
+
+begin molecule types
+  A
+  D
+end molecule types
+
+begin observables
+  Molecules X A.D
+end observables
