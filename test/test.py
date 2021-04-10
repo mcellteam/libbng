@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Copyright (C) 2019-2021 by
+Copyright (C) 2020-2021 by
 The Salk Institute for Biological Studies
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ import utils
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 WORK_DIR = os.path.join(THIS_DIR, 'work')
 BNGL_EXT = '.bngl'
-DEFAULT_TEST_APP = os.path.join(THIS_DIR, '..', '..', '..', 'build', 'debug', 'libs', 'bng', 'test_bng')
+DEFAULT_TEST_APP = os.path.join(THIS_DIR, '..', 'build', 'release', 'test_bnglib')
 
 # returns a list of TestInfo objects
 def get_test_files(dir):

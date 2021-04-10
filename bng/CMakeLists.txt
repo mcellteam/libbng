@@ -1,19 +1,21 @@
 cmake_minimum_required(VERSION 2.8.4)
 
-project(bng)
+project(bnglib)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../libs/nauty ${CMAKE_CURRENT_BINARY_DIR}/nauty)
 
 include_directories(
 	"${CMAKE_SOURCE_DIR}"
+	"${CMAKE_SOURCE_DIR}/.."
+	"${CMAKE_CURRENT_BINARY_DIR}/deps"
 	"${CMAKE_CURRENT_SOURCE_DIR}/../libs/sparsehash/src/"
 )
 
 add_definitions(-DYY_NO_UNISTD_H)
 
-if (NOT WIN32) # TODO
+if (NOT WIN32) 
   add_definitions(-std=c++14)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-function -Wall -isystem ${CMAKE_SOURCE_DIR}/libs/ -isystem ${CMAKE_SOURCE_DIR}/libs/sparsehash/src")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-function -Wall -isystem ${CMAKE_SOURCE_DIR}/../libs/ -isystem ${CMAKE_SOURCE_DIR}/../libs/sparsehash/src")
 endif()
 
 set(SOURCE_FILES
@@ -76,7 +78,7 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 add_executable(test_${PROJECT_NAME}
-    ${ALL_SOURCES}
+  ${ALL_SOURCES}
 	test.cpp # only for development
 )
 
