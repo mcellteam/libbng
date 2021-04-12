@@ -19,7 +19,7 @@ end molecule types
 
 begin seed species
 	 A(a~1)  10
-	 B        0 # this is the problematic line
+	 B        0 # this is the problematic line, shoudl be checked already during semantic analysis
 end seed species
 
 begin observables
