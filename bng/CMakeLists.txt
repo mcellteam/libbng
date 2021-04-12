@@ -77,11 +77,11 @@ target_link_libraries(${PROJECT_NAME}
 	PRIVATE nauty ${STDC_FS}
 )
 
-add_executable(test_${PROJECT_NAME}
+add_executable(parser_tester_${PROJECT_NAME}
   ${ALL_SOURCES}
 	test.cpp # only for development
 )
 
-target_link_libraries(test_${PROJECT_NAME}
+target_link_libraries(parser_tester_${PROJECT_NAME}
 	PUBLIC nauty ${STDC_FS}
 )

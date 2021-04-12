@@ -26,7 +26,7 @@ import utils
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 WORK_DIR = os.path.join(THIS_DIR, 'work')
 BNGL_EXT = '.bngl'
-DEFAULT_TEST_APP = os.path.join(THIS_DIR, '..', '..', 'build', 'release', 'test_bnglib')
+DEFAULT_TEST_APP = os.path.join(THIS_DIR, '..', '..', 'build', 'release', 'parser_tester_bnglib')
 
 # returns a list of TestInfo objects
 def get_test_files(dir):
