@@ -12,7 +12,9 @@ it is necessary to check they are correct.
 ====================================================================*/
 
 /* Check whether various headers or options are available */
+#ifndef HAVE_UNISTD_H
 #define HAVE_UNISTD_H  0    /* <unistd.h> */
+#endif
 #define HAVE_SYSTYPES_H  1    /* <sys/types.h> */
 #define HAVE_STDDEF_H  1     /* <stddef.h> */
 #define HAVE_STDLIB_H  1    /* <stdlib.h> */
