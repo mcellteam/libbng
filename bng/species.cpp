@@ -260,11 +260,13 @@ void Species::compute_space_and_time_step(const BNGConfig& config) {
 
 
 void Species::compute_diffusion_constant_and_space_time_step(const BNGConfig& config) {
+	// used whatever diffusion constant is set, may not be initialized
+
   if (elem_mols.size() == 1) {
     // nothing to compute if we have just one molecule instance
     const ElemMolType& mt = bng_data->get_elem_mol_type(elem_mols[0].elem_mol_type_id);
     D = mt.D;
-    assert(is_reactive_surface() || D != FLT_INVALID);
+    assert(!config.debug_requires_diffusion_constants || (is_reactive_surface() || D != FLT_INVALID));
   }
   else {
     // based on NFSim DerivedDiffusion::getDiffusionValue

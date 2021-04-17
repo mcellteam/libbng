@@ -103,7 +103,8 @@ public:
     grid_density(0),
     rx_radius_3d(0),
     intermembrane_rx_radius_3d(0),
-    rxn_and_species_report(true)
+    rxn_and_species_report(true),
+	debug_requires_diffusion_constants(false)
     {
   }
 
@@ -122,6 +123,10 @@ public:
 
   // generate report files during simulation
   bool rxn_and_species_report;
+
+  // flag to enable debug assertions that check that diffusion constants are set
+  // default is false
+  bool debug_requires_diffusion_constants;
 
   BNGWarnings warnings;
   BNGNotifications notifications;

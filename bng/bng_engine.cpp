@@ -28,6 +28,14 @@ using namespace std;
 
 namespace BNG {
 
+
+void BNGEngine::initialize() {
+  // insert information on rxn rules into rxn container
+  for (const RxnRule& r: data.get_rxn_rules()) {
+	all_rxns.add_and_finalize(r);
+  }
+}
+
 string BNGEngine::get_stats_report() const {
   stringstream res;
 

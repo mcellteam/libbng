@@ -3,6 +3,7 @@
 	<name>bnglib</name>
 	<comment></comment>
 	<projects>
+		<project>mcell</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

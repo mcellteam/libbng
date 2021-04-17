@@ -54,6 +54,10 @@ public:
       {
   }
 
+  // is the bnglib is used directly with the output of
+  // bng_data, one needs to call initialize to update contents of the RxnContainer
+  void initialize();
+
   std::string get_stats_report() const;
 
   bool matches_ignore_orientation(

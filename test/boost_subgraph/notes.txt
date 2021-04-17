@@ -1,0 +1,2 @@
+This directory contains examples of usage of Boost subgraph library,
+it is not tested automatically.
