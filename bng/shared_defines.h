@@ -86,7 +86,6 @@ __assert_fail_bng (const char *assertion, const char *file, unsigned int line,
 
 // ---------------------------------- float types ----------------------------------
 
-#define FLOAT_T_BYTES 8
 #define POS_T_BYTES 8
 
 // float_t is also defined in mathdef.h, we need to enclose it into
@@ -105,7 +104,7 @@ const float_t BNG_N_AV = 6.0221417930e23;
 #if POS_T_BYTES == 8
 
 typedef double pos_t;
-typedef double stime_t;
+typedef double stime_t; // short time
 
 const pos_t POS_EPS = EPS;
 const pos_t POS_SQRT_EPS = SQRT_EPS;
@@ -158,8 +157,14 @@ inline bool cmp_eq(const T& a, const T& b, const T eps) {
   return fabs_f(a - b) < eps;
 }
 
-static inline bool cmp_eq(float_t a, float_t b) {
+template<typename T>
+inline bool cmp_eq(const T& a, const T& b) {
   return cmp_eq(a, b, EPS);
+}
+
+template<>
+inline bool cmp_eq(const pos_t& a, const pos_t& b) {
+  return cmp_eq(a, b, POS_EPS);
 }
 
 // TODO32: can we use templates instead
@@ -199,39 +204,24 @@ static inline bool distinguishable_p(pos_t a, pos_t b, pos_t eps) {
   return (c > eps);
 }
 
+// TODO32: remove these after changing float_t to double
 static inline float_t sqrt_f(const float_t x) {
-#if FLOAT_T_BYTES == 8
   return sqrt(x);
-#else
-  return sqrtf(x);
-#endif
 }
 
 
 static inline float_t pow_f(const float_t a, const float_t n) {
-#if FLOAT_T_BYTES == 8
   return pow(a, n);
-#else
-  return powf(a, n);
-#endif
 }
 
 
 static inline float_t floor_f(const float_t a) {
-#if FLOAT_T_BYTES == 8
   return floor(a);
-#else
-  return floorf(a);
-#endif
 }
 
 
 static inline float_t round_f(const float_t a) {
-#if FLOAT_T_BYTES == 8
   return round(a);
-#else
-  return roundf(a);
-#endif
 }
 
 } // namespace BNGCommon
