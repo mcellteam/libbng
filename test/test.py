@@ -24,28 +24,39 @@ import sys
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(THIS_DIR, 'parser'))
+sys.path.append(os.path.join(THIS_DIR, 'api'))
+
+RELEASE_DIR = 'release'
+BUILD_DIR = os.path.join(THIS_DIR, '..', 'build', RELEASE_DIR)
 
 import parser_test
+import api_test
 
 if __name__ == '__main__':
     
     if len(sys.argv) >= 2:
-        test_app = os.path.abspath(sys.argv[1])
+        build_dir = os.path.abspath(sys.argv[1])
     else:     
-        test_app = parser_test.DEFAULT_TEST_APP
+        build_dir = BUILD_DIR
 
     if len(sys.argv) >= 3:
-        extra_args = [sys.argv[2]]
+        extra_args = [sys.argv[2:]]
     else: 
-        extra_args = [] 
+        extra_args = [''] 
         
-    print("Using test application " + test_app)
+    print("Using BNGlib build in " + build_dir)
     
     # parser tests  
-    parser_test_ec = parser_test.run_tests(test_app, extra_args)
+    parser_test_ec = parser_test.run_tests(build_dir, extra_args)
+    
+    # api tests
+    # TODO
+    #api_test_ec = api_test.run_tests(build_dir, extra_args)
+    api_test_ec = 0
     
     print("*** Summary ***")
     print("parser tests: " + "PASSED" if parser_test_ec == 0 else "FAILED")
+    print("api tests   : " + "PASSED" if api_test_ec == 0 else "FAILED")
     
-    sys.exit(parser_test_ec)
+    sys.exit(parser_test_ec + api_test_ec)
     

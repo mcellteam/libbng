@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 """
 Copyright (C) 2020-2021 by
 The Salk Institute for Biological Studies
@@ -22,12 +20,20 @@ limitations under the License.
 import os
 import sys
 import utils
+import platform
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 WORK_DIR = os.path.join(THIS_DIR, 'work')
 BNGL_EXT = '.bngl'
-DEFAULT_TEST_APP = os.path.join(THIS_DIR, '..', '..', 'build', 'release', 'parser_tester_bnglib')
 
+if 'Windows' in platform.system():
+    EXE_EXT = '.exe'
+else:
+    EXE_EXT = ''
+
+DEFAULT_TEST_APP = 'parser_tester_bnglib'
+
+    
 # returns a list of TestInfo objects
 def get_test_files(dir):
     res = []
@@ -82,9 +88,12 @@ def run_single_test(test_app, test_file, extra_args):
     print(" PASS " + test_file)
     return True
    
-def run_tests(test_app, extra_args):
+   
+def run_tests(build_dir, extra_args):
     if not os.path.exists(WORK_DIR):
         os.mkdir(WORK_DIR)
+    
+    test_app = os.path.join(build_dir, DEFAULT_TEST_APP)
     
     num_tests = 0
     num_tests_failed = 0        
@@ -93,7 +102,7 @@ def run_tests(test_app, extra_args):
     tests += get_test_files('positive')
     tests.sort()
     for t in tests:
-        ok = run_single_test(test_app, t, extra_args)
+        ok = run_single_test(test_app, t, extra_args[0])
         num_tests += 1
         if not ok:
             num_tests_failed += 1
@@ -107,21 +116,5 @@ def run_tests(test_app, extra_args):
         print("TESTING FAILED: " + str(num_tests_failed) + " failed out of " + str(num_tests))
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         return 1
-
-if __name__ == '__main__':
-    
-    if len(sys.argv) >= 2:
-        test_app = os.path.abspath(sys.argv[1])
-    else:     
-        test_app = DEFAULT_TEST_APP
-
-    if len(sys.argv) >= 3:
-        extra_args = [sys.argv[2]]
-    else: 
-        extra_args = [] 
-        
-    print("Using test application " + test_app)  
-    ec = run_tests(test_app, extra_args)
-    sys.exit(ec)
 
     
