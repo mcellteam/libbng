@@ -271,16 +271,23 @@ void Species::compute_diffusion_constant_and_space_time_step(const BNGConfig& co
   else {
     // based on NFSim DerivedDiffusion::getDiffusionValue
     // For large complex aggregates (1 um) diffusing on 2D surface:
-    //D_2D = KB*T*LOG((eta_PM*h/(Rc*(eta_EC+eta_CP)/2))-gamma)/(4*PI*eta_PM*h) (Saffman Delbruck)
-    //  combining rule for this case is not elaborated here.
+	//
+    // D_2D = KB*T*LOG((eta_PM*h/(Rc*(eta_EC+eta_CP)/2))-gamma)/(4*PI*eta_PM*h) (Saffman Delbruck)
+	//
+    // combining rule for this case is not elaborated here, not used here.
+	//
 
     // For small complexes diffusing on 2D surface:
-    //D_2D = ~1/Rc  (ref?)
-    //  combining rule for this case is the squareroot of the sum of the squares
+	//
+    // D_2D = ~1/Rc  (ref?)
+	//
+    // combining rule for this case is the squareroot of the sum of the squares
 
     // For complexes diffusing in 3D:
-    //D_3D = KB*T/(6*PI*eta_EC*Rs) (Einstein Stokes)
-    //  combining rule for this case is the cuberoot of the sum of the cubes
+	//
+    // D_3D = KB*T/(6*PI*eta_EC*Rs) (Einstein Stokes)
+	//
+    // combining rule for this case is the cuberoot of the sum of the cubes
 
     if (is_surf()) {
       // if complex contains any 2D subunits then the whole complex is considered to be a surface complex.

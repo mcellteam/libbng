@@ -36,7 +36,7 @@ void BNGNotifications::dump() const {
 }
 
 
-float_t BNGConfig::get_default_rx_radius_3d() const {
+BNGCommon::pos_t BNGConfig::get_default_rx_radius_3d() const {
   return (1.0 / sqrt_f(BNG_PI * grid_density)) / length_unit;
 }
 

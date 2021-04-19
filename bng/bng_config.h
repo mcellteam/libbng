@@ -115,11 +115,11 @@ public:
 
   // MCell
   BNGCommon::float_t time_unit;
-  BNGCommon::float_t length_unit;
-  BNGCommon::float_t rcp_length_unit;
-  BNGCommon::float_t grid_density;
-  BNGCommon::float_t rx_radius_3d;
-  BNGCommon::float_t intermembrane_rx_radius_3d;
+  BNGCommon::pos_t length_unit;
+  BNGCommon::pos_t rcp_length_unit;
+  BNGCommon::pos_t grid_density;
+  BNGCommon::pos_t rx_radius_3d;
+  BNGCommon::pos_t intermembrane_rx_radius_3d;
 
   // generate report files during simulation
   bool rxn_and_species_report;
@@ -146,7 +146,7 @@ public:
 
   void dump() const;
 
-  BNGCommon::float_t get_default_rx_radius_3d() const;
+  BNGCommon::pos_t get_default_rx_radius_3d() const;
 
 protected:
   std::string seed_as_str() const;

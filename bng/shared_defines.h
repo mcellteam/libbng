@@ -87,57 +87,74 @@ __assert_fail_bng (const char *assertion, const char *file, unsigned int line,
 // ---------------------------------- float types ----------------------------------
 
 #define FLOAT_T_BYTES 8
+#define POS_T_BYTES 8
 
 // float_t is also defined in mathdef.h, we need to enclose it into
 // a namespace and then copy the definition in all define headers
 namespace BNGCommon {
 
-#if FLOAT_T_BYTES == 8
 typedef double float_t;
-#elif FLOAT_T_BYTES == 4
-//typedef float float_t;
-#  error "Base type float32 is not supported yet"
-typedef float float_t;
-#else
-#  error "FLOAT_T_BYTES must be either 8 or 4"
-#endif
-}
-
-#include "bng/bng_config.h"
-
-namespace BNGCommon {
-
-const float_t BNG_PI = 3.14159265358979323846;
-const float_t BNG_N_AV = 6.0221417930e23;
-
-#if FLOAT_T_BYTES == 8
 
 const float_t EPS = 1e-12; // same as EPS_C
 const float_t SQRT_EPS = 1e-6;
 const float_t FLT_GIGANTIC = 1e140;
 
+const float_t BNG_PI = 3.14159265358979323846;
+const float_t BNG_N_AV = 6.0221417930e23;
+
+#if POS_T_BYTES == 8
+
+typedef double pos_t;
+typedef double stime_t;
+
+const pos_t POS_EPS = EPS;
+const pos_t POS_SQRT_EPS = SQRT_EPS;
+const pos_t POS_FLT_GIGANTIC = FLT_GIGANTIC;
+
+const stime_t STIME_EPS = EPS;
+const stime_t STIME_FLT_GIGANTIC = FLT_GIGANTIC;
+#define CHECK_STIME_MAX(v) do { } while (0)
+
 #else
+typedef float pos_t;
+typedef float stime_t;
 
-const float_t EPS = 1e-6;
-const float_t SQRT_EPS = 1e-4;
-const float_t FLT_GIGANTIC = 1e38;
+const pos_t POS_EPS = 1e-6f;
+const pos_t POS_SQRT_EPS = 1e-4f;
+const pos_t POS_FLT_GIGANTIC = 1e38f;
 
+const stime_t STIME_EPS = 1e-6f;
+const stime_t STIME_FLT_GIGANTIC = 1e-6f;
+const stime_t STIME_MAX = 100.0f;
+#define CHECK_STIME_MAX(v) do { assert((v) < BNGCommon::STIME_MAX); } while (0)
 #endif
 
+}
+
+
+#include "bng/bng_config.h"
+
+namespace BNGCommon {
 
 // NOTE: we must be sure to use our BNGCommon::float_t here otherwise
 // there will be conversion imprecisions if float_t from 'math.h' is used
 std::string f_to_str(const float_t val, const int n = 17);
 
 static inline float_t fabs_f(const float_t x) {
-#if FLOAT_T_BYTES == 8
   return fabs(x);
-#else
+}
+
+static inline pos_t fabs_p(const pos_t x) {
+#if POS_T_BYTES == 4
   return fabsf(x);
+#else
+  return fabs(x);
 #endif
 }
 
-static inline bool cmp_eq(const float_t a, const float_t b, const float_t eps) {
+// TODO32: go through all usages and make sure that we are using the right type
+template<typename T>
+inline bool cmp_eq(const T& a, const T& b, const T eps) {
   return fabs_f(a - b) < eps;
 }
 
@@ -145,7 +162,10 @@ static inline bool cmp_eq(float_t a, float_t b) {
   return cmp_eq(a, b, EPS);
 }
 
+// TODO32: can we use templates instead
 // returns true when whether two values are measurably different
+// TODO32: check all usages
+// TODO: what about a simple comparison with eps?
 static inline bool distinguishable_f(float_t a, float_t b, float_t eps) {
   float_t c = fabs_f(a - b);
   a = fabs_f(a);
@@ -153,6 +173,23 @@ static inline bool distinguishable_f(float_t a, float_t b, float_t eps) {
     a = 1;
   }
   b = fabs_f(b);
+
+  if (b < a) {
+    eps *= a;
+  } else {
+    eps *= b;
+  }
+  return (c > eps);
+}
+
+// TODO: what about a simple comparison with eps?
+static inline bool distinguishable_p(pos_t a, pos_t b, pos_t eps) {
+  float_t c = fabs_p(a - b);
+  a = fabs_p(a);
+  if (a < 1) {
+    a = 1;
+  }
+  b = fabs_p(b);
 
   if (b < a) {
     eps *= a;
