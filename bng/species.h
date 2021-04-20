@@ -36,7 +36,7 @@ public:
 
   // ----------- MCell-specific -----------
   float_t space_step;
-  float_t time_step; // in standard time
+  float_t time_step; // in internal time
 
   // must call finalize afterwards
   Species(const BNGData& data)

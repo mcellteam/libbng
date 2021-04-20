@@ -111,6 +111,7 @@ const pos_t POS_SQRT_EPS = SQRT_EPS;
 const pos_t POS_FLT_GIGANTIC = FLT_GIGANTIC;
 
 const stime_t STIME_EPS = EPS;
+const pos_t STIME_SQRT_EPS = SQRT_EPS;
 const stime_t STIME_FLT_GIGANTIC = FLT_GIGANTIC;
 #define CHECK_STIME_MAX(v) do { } while (0)
 
