@@ -23,6 +23,7 @@
 #ifndef __BNG_DEFINES_SHARED_H__
 #define __BNG_DEFINES_SHARED_H__
 
+// TODO: make the list of includes shorter for faster compilation
 #include <stdint.h>
 #include <climits>
 #include <cassert>
@@ -86,7 +87,7 @@ __assert_fail_bng (const char *assertion, const char *file, unsigned int line,
 
 // ---------------------------------- float types ----------------------------------
 
-#define POS_T_BYTES 8
+#define POS_T_BYTES 4
 
 // float_t is also defined in mathdef.h, we need to enclose it into
 // a namespace and then copy the definition in all define headers
@@ -111,7 +112,7 @@ const pos_t POS_SQRT_EPS = SQRT_EPS;
 const pos_t POS_FLT_GIGANTIC = FLT_GIGANTIC;
 
 const stime_t STIME_EPS = EPS;
-const pos_t STIME_SQRT_EPS = SQRT_EPS;
+const stime_t STIME_SQRT_EPS = SQRT_EPS;
 const stime_t STIME_FLT_GIGANTIC = FLT_GIGANTIC;
 #define CHECK_STIME_MAX(v) do { } while (0)
 
@@ -119,11 +120,12 @@ const stime_t STIME_FLT_GIGANTIC = FLT_GIGANTIC;
 typedef float pos_t;
 typedef float stime_t;
 
-const pos_t POS_EPS = 1e-6f;
-const pos_t POS_SQRT_EPS = 1e-4f;
+const pos_t POS_EPS = 1e-6f; // little higher than FLT_EPSILON that is 1.19e-7
+const pos_t POS_SQRT_EPS = 1e-3f;
 const pos_t POS_FLT_GIGANTIC = 1e38f;
 
 const stime_t STIME_EPS = 1e-6f;
+const stime_t STIME_SQRT_EPS = SQRT_EPS;
 const stime_t STIME_FLT_GIGANTIC = 1e-6f;
 const stime_t STIME_MAX = 100.0f;
 #define CHECK_STIME_MAX(v) do { assert((v) < BNGCommon::STIME_MAX); } while (0)
