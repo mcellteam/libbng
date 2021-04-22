@@ -14,7 +14,14 @@ it is necessary to check they are correct.
 /* Check whether various headers or options are available */
 #ifndef HAVE_UNISTD_H
 #define HAVE_UNISTD_H  0    /* <unistd.h> */
+#else
+#ifdef _WIN64
+// make sure this macro is 0 on Windows
+#undef HAVE_UNISTD_H
+#define HAVE_UNISTD_H  0
 #endif
+#endif
+
 #define HAVE_SYSTYPES_H  1    /* <sys/types.h> */
 #define HAVE_STDDEF_H  1     /* <stddef.h> */
 #define HAVE_STDLIB_H  1    /* <stdlib.h> */
