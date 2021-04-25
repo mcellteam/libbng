@@ -66,7 +66,6 @@ public:
   int bng_verbosity_level;
 
   // same as MCell3's varying_probability_report,
-  // TODO: probably not converted from data model
   bool rxn_probability_changed;
 
   void dump() const;
