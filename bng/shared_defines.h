@@ -87,7 +87,7 @@ __assert_fail_bng (const char *assertion, const char *file, unsigned int line,
 
 // ---------------------------------- float types ----------------------------------
 
-#define POS_T_BYTES 4
+#define POS_T_BYTES 8
 
 // float_t is also defined in mathdef.h, we need to enclose it into
 // a namespace and then copy the definition in all define headers
@@ -124,9 +124,9 @@ const pos_t POS_EPS = 1e-6f; // little higher than FLT_EPSILON that is 1.19e-7
 const pos_t POS_SQRT_EPS = 1e-3f;
 const pos_t POS_FLT_GIGANTIC = 1e38f;
 
-const stime_t STIME_EPS = 1e-6f;
+const stime_t STIME_EPS = 2e-6f;
 const stime_t STIME_SQRT_EPS = SQRT_EPS;
-const stime_t STIME_FLT_GIGANTIC = 1e-6f;
+const stime_t STIME_FLT_GIGANTIC = 1e38f;
 const stime_t STIME_MAX = 100.0f;
 #define CHECK_STIME_MAX(v) do { assert((v) < BNGCommon::STIME_MAX); } while (0)
 #endif
