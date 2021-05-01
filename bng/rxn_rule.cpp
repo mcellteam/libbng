@@ -2270,7 +2270,7 @@ std::string RxnRule::to_str(const bool with_rate_constant, const bool with_name,
     ss << cplx_vector_to_str(products);
   }
   else {
-    ss << COMPLEX_Null;
+    ss << COMPLEX_ZERO;
   }
 
   if (with_rate_constant) {

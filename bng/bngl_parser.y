@@ -45,6 +45,7 @@ namespace BNG {
   #include <cstdarg>
   #include <string>
   #include "bng/parser_utils.h"
+  #include "bng/bngl_names.h"
     
   // Declare stuff from Flex that Bison needs to know about:
   extern int bngllex();
@@ -385,10 +386,10 @@ rxn_rule_side_or_zero:
         if ($1 != 0) {
           bnglerror("Unexpected constant on the right-hand side of a reaction, only '0' is accepted.");
         }
-        // 0 is the same as molecule name Null and Thrash, we will create a complex with a single molecule
+        // 0 is the same as molecule Thrash, we will create a complex with a single molecule
         $$ = g_ctx->new_list_node()->append( 
                g_ctx->new_cplx_node(
-        	       g_ctx->new_molecule_node("Null", g_ctx->new_list_node(), nullptr, @1)
+        	       g_ctx->new_molecule_node(BNG::COMPLEX_ZERO, g_ctx->new_list_node(), nullptr, @1)
         	     )
        	);
       }

@@ -70,10 +70,9 @@ static const std::map<std::string, BnglFunctionInfo> bngl_function_infos {
   { "min", {2, nullptr, bngl_min} }
 };
 
-static bool is_thrash_or_null(const string& name) {
+static bool is_thrash_or_zero(const string& name) {
   // same check as in nfsim
-  return (name == COMPLEX_Null || name == COMPLEX_NULL || name == COMPLEX_null ||
-      name == COMPLEX_Trash || name == COMPLEX_TRASH || name == COMPLEX_trash);
+  return name == COMPLEX_ZERO || name == COMPLEX_Trash || name == COMPLEX_TRASH || name == COMPLEX_trash;
 }
 
 
@@ -592,7 +591,7 @@ void SemanticAnalyzer::collect_and_store_implicit_molecule_types() {
     ElemMolType new_mt;
     new_mt.name = same_name_it.first;
 
-    if (is_thrash_or_null(new_mt.name)) {
+    if (is_thrash_or_zero(new_mt.name)) {
       continue;
     }
 
@@ -896,7 +895,7 @@ void SemanticAnalyzer::convert_rxn_rule_side(
 
     if (cplx->size() == 1) {
       const ASTMolNode* m = to_molecule_node(cplx->mols[0]);
-      if (is_thrash_or_null(m->name)) {
+      if (is_thrash_or_zero(m->name)) {
         if (reactants_side) {
           errs_loc(m) <<
               "Null/Trash product cannot be used on the reactants side of a reeaction rule.\n"; // test N0620
