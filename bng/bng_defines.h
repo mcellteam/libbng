@@ -34,7 +34,6 @@
 namespace BNG {
 
 using BNGCommon::f_to_str;
-using BNGCommon::float_t;
 using BNGCommon::EPS;
 using BNGCommon::BNG_PI;
 using BNGCommon::BNG_N_AV;
@@ -54,7 +53,7 @@ const uint MAX_PRODUCT_SETS_PER_RXN = 1024*1024;
 
 // if unimol rxn probability is very high, this causes the simulation to practically fails
 // because the time interval between molecule creation and such unimol reaction is close to 0
-const float_t MAX_UNIMOL_RXN_PROBABILITY = 1e8;
+const double MAX_UNIMOL_RXN_PROBABILITY = 1e8;
 
 // if the count of products after applying a single rxn is greater ahan this value
 // and we know the count of the product, do not compute the products immediatelly

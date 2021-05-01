@@ -17,7 +17,7 @@
 /**
  * Definitions shared among BNG and other sources that might use it.
  *
- * No namespace is used here (except for float_t that in enclosed in namespace Common).
+ * No namespace is used for most definitions here (except for several definitions in BNGCommon).
  */
 
 #ifndef __BNG_DEFINES_SHARED_H__
@@ -89,18 +89,14 @@ __assert_fail_bng (const char *assertion, const char *file, unsigned int line,
 
 #define POS_T_BYTES 8
 
-// float_t is also defined in mathdef.h, we need to enclose it into
-// a namespace and then copy the definition in all define headers
 namespace BNGCommon {
 
-typedef double float_t;
+const double EPS = 1e-12; // same as EPS_C
+const double SQRT_EPS = 1e-6;
+const double FLT_GIGANTIC = 1e140;
 
-const float_t EPS = 1e-12; // same as EPS_C
-const float_t SQRT_EPS = 1e-6;
-const float_t FLT_GIGANTIC = 1e140;
-
-const float_t BNG_PI = 3.14159265358979323846;
-const float_t BNG_N_AV = 6.0221417930e23;
+const double BNG_PI = 3.14159265358979323846;
+const double BNG_N_AV = 6.0221417930e23;
 
 #if POS_T_BYTES == 8
 
@@ -138,11 +134,11 @@ const stime_t STIME_MAX = 100.0f;
 
 namespace BNGCommon {
 
-// NOTE: we must be sure to use our BNGCommon::float_t here otherwise
-// there will be conversion imprecisions if float_t from 'math.h' is used
-std::string f_to_str(const float_t val, const int n = 17);
+// NOTE: we must be sure to use our BNGCommon::double here otherwise
+// there will be conversion imprecisions if double from 'math.h' is used
+std::string f_to_str(const double val, const int n = 17);
 
-static inline float_t fabs_f(const float_t x) {
+static inline double fabs_f(const double x) {
   return fabs(x);
 }
 
@@ -174,8 +170,8 @@ inline bool cmp_eq(const pos_t& a, const pos_t& b) {
 // returns true when whether two values are measurably different
 // TODO32: check all usages
 // TODO: what about a simple comparison with eps?
-static inline bool distinguishable_f(float_t a, float_t b, float_t eps) {
-  float_t c = fabs_f(a - b);
+static inline bool distinguishable_f(double a, double b, double eps) {
+  double c = fabs_f(a - b);
   a = fabs_f(a);
   if (a < 1) {
     a = 1;
@@ -192,7 +188,7 @@ static inline bool distinguishable_f(float_t a, float_t b, float_t eps) {
 
 // TODO: what about a simple comparison with eps?
 static inline bool distinguishable_p(pos_t a, pos_t b, pos_t eps) {
-  float_t c = fabs_p(a - b);
+  double c = fabs_p(a - b);
   a = fabs_p(a);
   if (a < 1) {
     a = 1;
@@ -207,23 +203,23 @@ static inline bool distinguishable_p(pos_t a, pos_t b, pos_t eps) {
   return (c > eps);
 }
 
-// TODO32: remove these after changing float_t to double
-static inline float_t sqrt_f(const float_t x) {
+// TODO32: remove these after changing double to double
+static inline double sqrt_f(const double x) {
   return sqrt(x);
 }
 
 
-static inline float_t pow_f(const float_t a, const float_t n) {
+static inline double pow_f(const double a, const double n) {
   return pow(a, n);
 }
 
 
-static inline float_t floor_f(const float_t a) {
+static inline double floor_f(const double a) {
   return floor(a);
 }
 
 
-static inline float_t round_f(const float_t a) {
+static inline double round_f(const double a) {
   return round(a);
 }
 
@@ -231,15 +227,15 @@ static inline float_t round_f(const float_t a) {
 
 
 // ---------------------------------- fixed constants and specific typedefs -------------------
-const float_t POS_INVALID = FLT_MAX; // cannot be NAN because we cannot do any comparison with NANs
+const double POS_INVALID = FLT_MAX; // cannot be NAN because we cannot do any comparison with NANs
 
-const float_t FLT_INVALID = FLT_MAX;
+const double FLT_INVALID = FLT_MAX;
 
-const float_t TIME_INVALID = -1;
-const float_t TIME_FOREVER = FLT_MAX; // this max is sufficient for both float and double
-const float_t TIME_SIMULATION_START = 0;
+const double TIME_INVALID = -1;
+const double TIME_FOREVER = FLT_MAX; // this max is sufficient for both float and double
+const double TIME_SIMULATION_START = 0;
 
-const float_t DEFAULT_TIME_STEP = 1.0;
+const double DEFAULT_TIME_STEP = 1.0;
 
 const uint UINT_INVALID = UINT32_MAX; // invalid value to be used for any invalid unsigned integer values
 const uint UINT_INVALID2 = UINT32_MAX - 1; // second invalid value not to be used, in this case for any purpose

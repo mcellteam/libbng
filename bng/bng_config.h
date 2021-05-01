@@ -113,7 +113,7 @@ public:
   uint initial_seed;
 
   // MCell
-  BNGCommon::float_t time_unit;
+  double time_unit;
   BNGCommon::pos_t length_unit;
   BNGCommon::pos_t rcp_length_unit;
   BNGCommon::pos_t grid_density;

@@ -41,7 +41,7 @@ void ComponentType::dump(const BNGData& bng_data) const {
 }
 
 
-float_t get_default_space_step(const BNGConfig& config, const float_t D) {
+double get_default_space_step(const BNGConfig& config, const double D) {
   return sqrt_f(4.0 * 1.0e8 * D * config.time_unit) * config.rcp_length_unit;
 }
 
@@ -94,9 +94,9 @@ Out: the species, or NULL if an error occurred
 
 void get_space_and_time_step(
     const BNGConfig& config,
-    const bool is_surf, const float_t D,
-    const float_t custom_time_step, const float_t custom_space_step,
-    float_t& time_step, float_t& space_step) {
+    const bool is_surf, const double D,
+    const double custom_time_step, const double custom_space_step,
+    double& time_step, double& space_step) {
 
   assert(!config.debug_requires_diffusion_constants || D != FLT_INVALID);
   // Immobile (boring)
@@ -106,7 +106,7 @@ void get_space_and_time_step(
   }
   // Custom timestep or spacestep
   else if (custom_space_step > 0) {
-    float_t lr_bar = custom_space_step;
+    double lr_bar = custom_space_step;
     if (is_surf) {
       time_step =
           lr_bar * lr_bar / (BNG_PI * 1.0e8 * D * config.time_unit);

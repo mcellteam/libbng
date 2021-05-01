@@ -242,7 +242,7 @@ void SemanticAnalyzer::resolve_rxn_rates() {
 // the following conversions do not use the bng_data.parameters map
 // if a parameter is in the map parameter_overrides, the supplied value is used instead
 void SemanticAnalyzer::convert_and_evaluate_parameters(
-    const std::map<std::string, float_t>& parameter_overrides) {
+    const std::map<std::string, double>& parameter_overrides) {
 
   // first go trough all parameter overrides and either change definition or add
   // this parameter to the symbol table
@@ -425,7 +425,7 @@ void SemanticAnalyzer::convert_and_store_compartments() {
 
     // volume
     ASTExprNode* evaluated_volume = evaluate_to_dbl(n->volume);
-    float_t volume = evaluated_volume->get_dbl();
+    double volume = evaluated_volume->get_dbl();
     if (volume < 0) {
       errs_loc(n) <<
           "Compartment '" << n->name << "' has negative volume " << volume << ".\n"; // test N0301
@@ -1090,7 +1090,7 @@ void SemanticAnalyzer::convert_observables() {
 bool SemanticAnalyzer::check_and_convert_parsed_file(
     ParserContext* ctx_,
     BNGData* res_bng,
-    const std::map<std::string, float_t>& parameter_overrides) {
+    const std::map<std::string, double>& parameter_overrides) {
 
   assert(ctx_ != nullptr);
   assert(res_bng != nullptr);

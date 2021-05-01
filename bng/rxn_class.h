@@ -60,7 +60,7 @@ private:
 
   // Maximum probability for region of p-space for all non-cooperative pathways,
   // valid when pathways_and_rates_initialized is true
-  float_t max_fixed_p;
+  double max_fixed_p;
 
   // owned by BNGEngine
   RxnContainer& all_rxns;
@@ -105,14 +105,14 @@ public:
 
   // first query for the max probability or for rxn rate update usually causes
   // rxn pathways to be initialized
-  float_t get_max_fixed_p() {
+  double get_max_fixed_p() {
     if (!pathways_and_rates_initialized) {
       init_rxn_pathways_and_rates();
     }
     return max_fixed_p;
   }
 
-  void update_rxn_rates_if_needed(const float_t current_time);
+  void update_rxn_rates_if_needed(const double current_time);
 
   RxnRule* get_rxn_for_pathway(const rxn_class_pathway_index_t pathway_index);
 
@@ -131,7 +131,7 @@ public:
   }
 
   rxn_class_pathway_index_t get_pathway_index_for_probability(
-      const float_t prob, const float_t local_prob_factor);
+      const double prob, const double local_prob_factor);
 
   orientation_t get_reactant_orientation(uint reactant_index) const;
 
@@ -140,7 +140,7 @@ public:
 
   // this function expects that update_rxn_rates_if_needed was called
   // already for the current time
-  float_t get_next_time_of_rxn_rate_update() const;
+  double get_next_time_of_rxn_rate_update() const;
 
   bool is_standard() const {
     return type == RxnType::Standard;
@@ -228,17 +228,17 @@ private:
 
   void define_rxn_pathway_using_mapping(const rxn_class_pathway_index_t pathway_index);
 
-  void update_variable_rxn_rates(const float_t current_time);
+  void update_variable_rxn_rates(const double current_time);
 
   void debug_check_bimol_vol_rxn_flag() const;
 
   std::string reactants_to_str() const;
 
-  float_t get_reactant_diffusion(const uint reactant_index) const;
-  float_t get_reactant_space_step(const uint reactant_index) const;
-  float_t get_reactant_time_step(const uint reactant_index) const;
+  double get_reactant_diffusion(const uint reactant_index) const;
+  double get_reactant_space_step(const uint reactant_index) const;
+  double get_reactant_time_step(const uint reactant_index) const;
 
-  float_t compute_pb_factor() const;
+  double compute_pb_factor() const;
 };
 
 

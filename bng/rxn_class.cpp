@@ -38,7 +38,7 @@ RxnClass::~RxnClass() {
 
 // might need to be different for NFsim
 // not sure if this belongs here
-float_t RxnClass::get_reactant_space_step(const uint reactant_index) const {
+double RxnClass::get_reactant_space_step(const uint reactant_index) const {
   assert(reactant_index < reactant_ids.size());
 
   const Species& s = all_species.get(reactant_ids[reactant_index]);
@@ -46,7 +46,7 @@ float_t RxnClass::get_reactant_space_step(const uint reactant_index) const {
 }
 
 
-float_t RxnClass::get_reactant_time_step(const uint reactant_index) const {
+double RxnClass::get_reactant_time_step(const uint reactant_index) const {
   assert(reactant_index < reactant_ids.size());
 
   const Species& s = all_species.get(reactant_ids[reactant_index]);
@@ -54,7 +54,7 @@ float_t RxnClass::get_reactant_time_step(const uint reactant_index) const {
 }
 
 
-float_t RxnClass::get_reactant_diffusion(const uint reactant_index) const {
+double RxnClass::get_reactant_diffusion(const uint reactant_index) const {
   assert(reactant_index < reactant_ids.size());
 
   const Species& s = all_species.get(reactant_ids[reactant_index]);
@@ -114,7 +114,7 @@ species_id_t RxnClass::get_reactive_surface_reactant_species_id() const {
 }
 
 
-void RxnClass::update_rxn_rates_if_needed(const float_t current_time) {
+void RxnClass::update_rxn_rates_if_needed(const double current_time) {
   // check if any of the reactions needs update
   for (rxn_rule_id_t id: rxn_rule_ids) {
     RxnRule* rxn = all_rxns.get(id);
@@ -128,12 +128,12 @@ void RxnClass::update_rxn_rates_if_needed(const float_t current_time) {
 
 // this function expects that update_rxn_rates_if_needed was called
 // already for the current time
-float_t RxnClass::get_next_time_of_rxn_rate_update() const {
-  float_t min = TIME_FOREVER;
+double RxnClass::get_next_time_of_rxn_rate_update() const {
+  double min = TIME_FOREVER;
   for (rxn_rule_id_t id: rxn_rule_ids) {
     const RxnRule* rxn = all_rxns.get(id);
 
-    float_t t = rxn->get_next_time_of_rxn_rate_update();
+    double t = rxn->get_next_time_of_rxn_rate_update();
     if (t < min) {
       min = t;
     }
@@ -157,7 +157,7 @@ void RxnClass::define_rxn_pathway_using_mapping(const rxn_class_pathway_index_t 
 
 // based on MCell3's binary_search_double
 rxn_class_pathway_index_t RxnClass::get_pathway_index_for_probability(
-    const float_t prob, const float_t local_prob_factor) {
+    const double prob, const double local_prob_factor) {
   if (!pathways_and_rates_initialized) {
     // when a rxn class has only 1 rxn rule, the total prob may not be queried before
     init_rxn_pathways_and_rates();
@@ -188,7 +188,7 @@ rxn_class_pathway_index_t RxnClass::get_pathway_index_for_probability(
 
 // function for computing the probability factor (pb_factor) used to
 // convert reaction rate constants into probabilities
-float_t RxnClass::compute_pb_factor() const {
+double RxnClass::compute_pb_factor() const {
 
 #ifndef NDEBUG
   assert(get_num_reactions() >= 1);
@@ -219,7 +219,7 @@ float_t RxnClass::compute_pb_factor() const {
 
   // mcell3 divides the radius after reaction initialization,
   // we already have the value that was divided
-  float_t rx_radius_3d_mul_length_unit = bng_config.rx_radius_3d * bng_config.length_unit;
+  double rx_radius_3d_mul_length_unit = bng_config.rx_radius_3d * bng_config.length_unit;
 
   small_vector<const Species*> reactant_species;
   for (uint n_reactant = 0; n_reactant < reactant_ids.size(); n_reactant++) {
@@ -237,7 +237,7 @@ float_t RxnClass::compute_pb_factor() const {
   }
 
   /* probability for this reaction */
-  float_t pb_factor = 0.0;
+  double pb_factor = 0.0;
 
   /* determine reaction probability by proper conversion of the reaction rate constant */
   assert(reactant_ids.size() == 1 || reactant_ids.size() == 2);
@@ -280,8 +280,8 @@ float_t RxnClass::compute_pb_factor() const {
       /* or reaction between "vol_mol" and SURFACE           */
       // NOTE: we do not care about cant_initiate here, is this correct?
 
-      float_t D_tot = 0.0;
-      float_t t_step = 0.0;
+      double D_tot = 0.0;
+      double t_step = 0.0;
       if (reactant_species[0]->is_vol()) {
         D_tot = get_reactant_diffusion(0);
         t_step = get_reactant_time_step(0) * bng_config.time_unit;
@@ -329,9 +329,9 @@ float_t RxnClass::compute_pb_factor() const {
   else if (num_vol_reactants == 2) {
     /* This is the reaction between two "vol_mols" */
 
-    float_t eff_vel_a = get_reactant_space_step(0) / get_reactant_time_step(0);
-    float_t eff_vel_b = get_reactant_space_step(1) / get_reactant_time_step(1);
-    float_t eff_vel;
+    double eff_vel_a = get_reactant_space_step(0) / get_reactant_time_step(0);
+    double eff_vel_b = get_reactant_space_step(1) / get_reactant_time_step(1);
+    double eff_vel;
 
     if (reactant_species[0]->is_target_only() && reactant_species[1]->is_target_only()) {
       warns() <<
@@ -428,7 +428,7 @@ void RxnClass::init_rxn_pathways_and_rates(const bool force_update) {
   pathways.clear();
 
   // 1) compute binding probability factor
-  float_t pb_factor = compute_pb_factor();
+  double pb_factor = compute_pb_factor();
 
   // 2) define pathways
   // sort rules by ID to make sure we get identical results all the time
@@ -513,7 +513,7 @@ void RxnClass::init_rxn_pathways_and_rates(const bool force_update) {
 }
 
 
-void RxnClass::update_variable_rxn_rates(const float_t current_time) {
+void RxnClass::update_variable_rxn_rates(const double current_time) {
   bool any_changed = false;
   vector<rxn_rule_id_t> changed_rxn_rules;
 
@@ -541,7 +541,7 @@ void RxnClass::update_variable_rxn_rates(const float_t current_time) {
     }
     release_assert(first_pw_changed != PATHWAY_INDEX_INVALID);
 
-    float_t prob = pathways[first_pw_changed].pathway_prob;
+    double prob = pathways[first_pw_changed].pathway_prob;
     if (bng_config.notifications.rxn_probability_changed) {
       notifys() <<
           "Probability " << prob << " set for " << all_rxns.get(changed_id)->to_str() <<

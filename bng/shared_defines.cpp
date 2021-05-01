@@ -18,7 +18,7 @@
 
 namespace BNGCommon {
 
-std::string f_to_str(const float_t val, const int n) {
+std::string f_to_str(const double val, const int n) {
   std::stringstream out;
   if (val == 0.0) {
     return "0";

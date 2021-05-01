@@ -35,7 +35,7 @@ namespace BNG {
 int parse_bngl_file(
     const std::string& file_name,
     BNGData& bng_data,
-    const std::map<std::string, float_t>& parameter_overrides) {
+    const std::map<std::string, double>& parameter_overrides) {
 
   bng_data.clear();
 

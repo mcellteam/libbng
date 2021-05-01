@@ -34,7 +34,7 @@ class Cplx;
 int parse_bngl_file(
     const std::string& file_name,
     BNGData& bng_data,
-    const std::map<std::string, float_t>& parameter_overrides = std::map<std::string, float_t>()
+    const std::map<std::string, double>& parameter_overrides = std::map<std::string, double>()
 );
 
 

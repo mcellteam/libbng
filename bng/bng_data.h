@@ -33,7 +33,7 @@ public:
   }
 
   Cplx cplx; // may also contain compartment where molecules should be released
-  float_t count; // count of molecules to be released (exact value from the BNGL file)
+  double count; // count of molecules to be released (exact value from the BNGL file)
 };
 
 
@@ -67,7 +67,7 @@ public:
   std::string name;
   bool is_3d; // 2d if this member is false
 private:
-  float_t volume;
+  double volume;
 public:
   compartment_id_t parent_compartment_id; // COMPARTMENT_ID_INVALID if the compartment has no parents
   CompartmentIdSet children_compartments; // those are direct children
@@ -76,12 +76,12 @@ public:
     return volume != FLT_INVALID;
   }
 
-  float_t get_volume() const {
+  double get_volume() const {
     assert(is_volume_set());
     return volume;
   }
 
-  void set_volume(const float_t volume_) {
+  void set_volume(const double volume_) {
     volume = volume_;
   }
 
@@ -122,7 +122,7 @@ private:
   
   // not referenced by any other data in this class,
   // keeping for cases when the parameter values might be needed for other purposes
-  std::map<std::string, float_t> parameters;
+  std::map<std::string, double> parameters;
 
   // contents of the seed species section
   // not used directly but can be converted to other representations
@@ -246,13 +246,13 @@ public:
 
   // -------- parameters --------
 
-  void add_parameter(const std::string& name, const float_t& value) {
+  void add_parameter(const std::string& name, const double& value) {
     assert(parameters.count(name) == 0);
     parameters[name] = value;
   }
 
   // returns true and sets value if found, returns falser otherwise
-  bool get_parameter_value(const std::string& name, float_t& value) const {
+  bool get_parameter_value(const std::string& name, double& value) const {
     auto it = parameters.find(name);
     if (it == parameters.end()) {
       return false;
@@ -263,7 +263,7 @@ public:
     }
   }
 
-  const std::map<std::string, float_t>& get_parameters() const {
+  const std::map<std::string, double>& get_parameters() const {
     return parameters;
   }
 

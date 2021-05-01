@@ -65,26 +65,26 @@ public:
       scale(other.scale) {
   }
 
-  float_t D; // diffusion constant
+  double D; // diffusion constant
 
   // computed values, set differently for ElemMolType and Species
-  float_t time_step;
-  float_t space_step;
+  double time_step;
+  double space_step;
 
   // visualization
-  void set_color(float_t r, float_t g, float_t b) {
+  void set_color(double r, double g, double b) {
     color_r = r;
     color_g = g;
     color_b = b;
     color_set = true;
   }
-  void set_scale(float_t s) {
+  void set_scale(double s) {
     scale = s;
   }
 
   bool color_set;
-  float_t color_r, color_g, color_b ;  // mol color default is red
-  float_t scale; // scale = 1 by default
+  double color_r, color_g, color_b ;  // mol color default is red
+  double scale; // scale = 1 by default
 
 };
 
@@ -103,8 +103,8 @@ public:
 
   // when the user supplied a custom step, the attribute
   // is set to non-zero value, max one of them can be set to a non-zero value
-  float_t custom_time_step;
-  float_t custom_space_step;
+  double custom_time_step;
+  double custom_space_step;
 
   bool has_custom_time_or_space_step() const {
     return custom_time_step != 0 || custom_space_step != 0;
@@ -140,13 +140,13 @@ public:
 
 
 // auxiliary functions used by ElemMolType and Species
-float_t get_default_space_step(const BNGConfig& config, const float_t D);
+double get_default_space_step(const BNGConfig& config, const double D);
 
 void get_space_and_time_step(
     const BNGConfig& config,
-    const bool is_surf, const float_t D,
-    const float_t custom_time_step, const float_t custom_space_step,
-    float_t& time_step, float_t& space_step);
+    const bool is_surf, const double D,
+    const double custom_time_step, const double custom_space_step,
+    double& time_step, double& space_step);
 
 } /* namespace BNG */
 

@@ -32,7 +32,7 @@ public:
   bool check_and_convert_parsed_file(
       ParserContext* ctx_,
       BNGData* res_bng,
-      const std::map<std::string, float_t>& parameter_overrides = std::map<std::string, float_t>()
+      const std::map<std::string, double>& parameter_overrides = std::map<std::string, double>()
   );
 
   bool check_and_convert_single_cplx(
@@ -43,7 +43,7 @@ private:
   ASTExprNode* evaluate_to_dbl(ASTExprNode* root, std::set<std::string> used_ids={});
   void resolve_rxn_rates();
 
-  void convert_and_evaluate_parameters(const std::map<std::string, float_t>& parameter_overrides);
+  void convert_and_evaluate_parameters(const std::map<std::string, double>& parameter_overrides);
 
   state_id_t convert_state_name(const ASTStrNode* s);
   ComponentType convert_component_type(

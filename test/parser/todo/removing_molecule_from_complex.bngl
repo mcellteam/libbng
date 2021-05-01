@@ -8,7 +8,7 @@
 # maybe we can disable this behavior completely
 # pymcel4 currently asserts with
 # ../../src4/diffuse_react_event.cpp:2037: int
-# MCell::DiffuseReactEvent::outcome_products_random(MCell::Partition&, const MCell::Collision&, BNGCommon::float_t, rxn_index_t, bool&, bool&): Assertion `product_species_ids.size() == rx->products.size()' failed.
+# MCell::DiffuseReactEvent::outcome_products_random(MCell::Partition&, const MCell::Collision&, double, rxn_index_t, bool&, bool&): Assertion `product_species_ids.size() == rx->products.size()' failed.
 
 begin model
 begin parameters

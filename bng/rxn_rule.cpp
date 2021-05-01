@@ -99,7 +99,7 @@ void RxnRule::define_rxn_pathways_for_specific_reactants(
     const BNGConfig& bng_config,
     const species_id_t reactant_a_species_id,
     const species_id_t reactant_b_species_id,
-    const float_t pb_factor,
+    const double pb_factor,
     RxnClassPathwayVector& pathways
 ) {
 
@@ -121,7 +121,7 @@ void RxnRule::define_rxn_pathways_for_specific_reactants(
       product_species.push_back(ProductSpeciesIdWIndices(species_id, i));
     }
 
-    float_t prob;
+    double prob;
     if (cmp_eq(get_rate_constant(), FLT_GIGANTIC)) {
       // special surface reactions are not scaled
       prob = get_rate_constant();
@@ -1381,7 +1381,7 @@ void RxnRule::create_products_for_complex_rxn(
     SpeciesContainer& all_species,
     const BNGConfig& bng_config,
     const std::vector<species_id_t>& reactant_species,
-    const float_t pb_factor,
+    const double pb_factor,
     RxnClassPathwayVector& pathways
 ) {
 
@@ -1503,7 +1503,7 @@ void RxnRule::create_products_for_complex_rxn(
 
       // the probability is divided by the number of mapping of pattern onto pattern
       // because so many more product sets we will get
-      float_t prob = get_rate_constant() * pb_factor;
+      double prob = get_rate_constant() * pb_factor;
 
       pathways.push_back(RxnClassPathway(id, prob, mapping));
     }
@@ -1629,7 +1629,7 @@ void RxnRule::create_products_for_complex_rxn(
 
     // the probability is divided by the number of mapping of pattern onto pattern
     // because so many more product sets we will get
-    float_t prob = get_rate_constant() * pb_factor;
+    double prob = get_rate_constant() * pb_factor;
 
     pathways.push_back(RxnClassPathway(id, prob, product_species));
   }
@@ -2193,7 +2193,7 @@ void RxnRule::remove_species_id_references(const species_id_t id) {
 }
 
 
-bool RxnRule::update_variable_rxn_rate(const float_t current_time, const RxnClass* requester) {
+bool RxnRule::update_variable_rxn_rate(const double current_time, const RxnClass* requester) {
   if (!may_update_rxn_rate()) {
     return false;
   }
@@ -2237,7 +2237,7 @@ bool RxnRule::update_variable_rxn_rate(const float_t current_time, const RxnClas
 }
 
 
-bool RxnRule::update_rxn_rate(const float_t new_rate) {
+bool RxnRule::update_rxn_rate(const double new_rate) {
 
   // skip if rate is the same
   if (base_rate_constant == new_rate) {

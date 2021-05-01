@@ -104,7 +104,7 @@ class RxnClassPathway {
 public:
   RxnClassPathway(
       const rxn_rule_id_t rxn_rule_id_,
-      const float_t pathway_prob_,
+      const double pathway_prob_,
       const RxnProductsVector& product_species_w_indices_
   ) : rxn_rule_id(rxn_rule_id_),
       pathway_prob(pathway_prob_),
@@ -115,7 +115,7 @@ public:
 
   RxnClassPathway(
       const rxn_rule_id_t rxn_rule_id_,
-      const float_t pathway_prob_,
+      const double pathway_prob_,
       const VertexMapping& rule_mapping_onto_reactants_
   ) : rxn_rule_id(rxn_rule_id_),
       pathway_prob(pathway_prob_),
@@ -129,7 +129,7 @@ public:
 
   // probability for this specific pathway to be selected when
   // reactants interact (or when an unimol rxn is executed)
-  float_t pathway_prob;
+  double pathway_prob;
 
   // specific variant of products for this pathway,
   // valid when products_are_defined is true
@@ -141,7 +141,7 @@ public:
   VertexMapping rule_mapping_onto_reactants;
 
   // cumulative probability - set when used in rxn class
-  float_t cum_prob;
+  double cum_prob;
 
   bool products_are_defined;
 };
@@ -161,8 +161,8 @@ struct CplxIndexPair {
 
 
 struct RxnRateInfo {
-  float_t time;
-  float_t rate_constant;
+  double time;
+  double rate_constant;
 
   bool operator < (const RxnRateInfo& ri2) const {
     return time < ri2.time;
@@ -218,7 +218,7 @@ public:
   CplxVector products;
 
   // base rate constant for this reaction as obtained from the BNGL or other input
-  float_t base_rate_constant;
+  double base_rate_constant;
 
   small_vector<RxnRateInfo> base_variable_rates;
 
@@ -254,7 +254,7 @@ public:
       const BNGConfig& bng_config,
       const species_id_t reactant_a_species_id,
       const species_id_t reactant_b_species_id,
-      const float_t pb_factor,
+      const double pb_factor,
       RxnClassPathwayVector& pathways
   );
 
@@ -266,7 +266,7 @@ public:
     RxnClassPathway& pathway
   ) const;
 
-  float_t get_rate_constant() const {
+  double get_rate_constant() const {
     return base_rate_constant;
   }
 
@@ -471,9 +471,9 @@ public:
 
   // returns true if rate was updated
   // requester is the rxn class that requested this update
-  bool update_variable_rxn_rate(const float_t current_time, const RxnClass* requester);
+  bool update_variable_rxn_rate(const double current_time, const RxnClass* requester);
 
-  float_t get_next_time_of_rxn_rate_update() const {
+  double get_next_time_of_rxn_rate_update() const {
     if (may_update_rxn_rate()) {
       return base_variable_rates[next_variable_rate_index].time;
     }
@@ -484,7 +484,7 @@ public:
 
   // manual update of rxn rate, does nothing if the new rate is the same as existing
   // returns true if the rate was updated
-  bool update_rxn_rate(const float_t new_rate);
+  bool update_rxn_rate(const double new_rate);
 
   std::string to_str(
       const bool with_rate_constant = true, const bool with_name = true, const bool with_id = true) const;
@@ -506,7 +506,7 @@ private:
       SpeciesContainer& all_species,
       const BNGConfig& bng_config,
       const std::vector<species_id_t>& reactant_species,
-      const float_t pb_factor,
+      const double pb_factor,
       RxnClassPathwayVector& pathways
   );
 

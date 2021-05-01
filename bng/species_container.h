@@ -255,7 +255,7 @@ public:
     }
   }
 
-  float_t get_max_time_step() const {
+  double get_max_time_step() const {
     return max_time_step;
   }
 
@@ -308,7 +308,7 @@ private:
 
   // maximal time step of any species contained in this species container,
   // this is be useful e.g. when looking for barriers in simulation
-  float_t max_time_step;
+  double max_time_step;
 };
 
 } // namespace BNG

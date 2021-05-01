@@ -35,8 +35,8 @@ public:
   std::string name; // string representation of the complex
 
   // ----------- MCell-specific -----------
-  float_t space_step;
-  float_t time_step; // in internal time
+  double space_step;
+  double time_step; // in internal time
 
   // must call finalize afterwards
   Species(const BNGData& data)
@@ -194,11 +194,11 @@ public:
     return has_flag(SPECIES_FLAG_CAN_DIFFUSE);
   }
 
-  float_t get_time_step() const {
+  double get_time_step() const {
     return time_step;
   }
 
-  float_t get_space_step() const {
+  double get_space_step() const {
     return space_step;
   }
 

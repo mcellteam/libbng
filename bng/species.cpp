@@ -135,8 +135,8 @@ void Species::compute_space_and_time_step(const BNGConfig& config) {
 
   // check if any of the used elementary molecules has custom time or space step
   // 0 means that it was not set
-  float_t min_custom_time_step = FLT_GIGANTIC;
-  float_t min_custom_space_step = FLT_GIGANTIC;
+  double min_custom_time_step = FLT_GIGANTIC;
+  double min_custom_space_step = FLT_GIGANTIC;
   bool has_mol_wo_custom_time_step = false;
   bool has_mol_wo_custom_space_step = false;
 
@@ -168,7 +168,7 @@ void Species::compute_space_and_time_step(const BNGConfig& config) {
     min_custom_time_step = 0;
   }
 
-  float_t default_space_step = get_default_space_step(config, D);
+  double default_space_step = get_default_space_step(config, D);
   if (min_custom_space_step == FLT_GIGANTIC ||
       (has_mol_wo_custom_space_step && min_custom_space_step > default_space_step)) {
     min_custom_space_step = 0;
@@ -214,7 +214,7 @@ void Species::compute_space_and_time_step(const BNGConfig& config) {
 
     if (min_custom_space_step != 0 && min_custom_time_step != 0) {
       // both are used in our complex, use the one giving smaller result
-      float_t ts_time, ss_time;
+      double ts_time, ss_time;
       get_space_and_time_step(
           config,
           has_flag_no_finalized_check(SPECIES_CPLX_MOL_FLAG_SURF), D,
@@ -222,7 +222,7 @@ void Species::compute_space_and_time_step(const BNGConfig& config) {
           ts_time, ss_time
       );
 
-      float_t ts_space, ss_space;
+      double ts_space, ss_space;
       get_space_and_time_step(
           config,
           has_flag_no_finalized_check(SPECIES_CPLX_MOL_FLAG_SURF), D,
@@ -293,10 +293,10 @@ void Species::compute_diffusion_constant_and_space_time_step(const BNGConfig& co
       // if complex contains any 2D subunits then the whole complex is considered to be a surface complex.
       // in this case combine only the 2D subunits to derive the 2D diffusion constant
       bool is_immobile = false;
-      float_t acc = 0;
+      double acc = 0;
       for (const ElemMol& mi: elem_mols) {
         if (mi.is_surf()) {
-          float_t mol_type_D = bng_data->get_elem_mol_type(mi.elem_mol_type_id).D;
+          double mol_type_D = bng_data->get_elem_mol_type(mi.elem_mol_type_id).D;
 
           // if diffusion constant of any 2D member is zero (i.e. is immobile) then whole complex should be immobile
           if (mol_type_D == 0) {
@@ -320,10 +320,10 @@ void Species::compute_diffusion_constant_and_space_time_step(const BNGConfig& co
 
       // 3D combining rule: compute cuberoot of the sum of the cubes
       bool is_immobile = false;
-      float_t acc = 0;
+      double acc = 0;
       for (const ElemMol& mi: elem_mols) {
         assert(!mi.is_surf());
-        float_t mol_type_D = bng_data->get_elem_mol_type(mi.elem_mol_type_id).D;
+        double mol_type_D = bng_data->get_elem_mol_type(mi.elem_mol_type_id).D;
 
         //  if diffusion constant of any 3D member is zero (i.e. is immobile) then whole complex should be immobile
         if (mol_type_D == 0) {
@@ -350,9 +350,9 @@ void Species::compute_diffusion_constant_and_space_time_step(const BNGConfig& co
 void Species::dump(const string ind) const {
   cout << ind << "species_id: \t\t" << id << " [uint16_t] \t\t/* Unique ID for this species */\n";
   cout << ind << "name: *\t\t" << name << " [string] \t\t/* Symbol table entry (name) */\n";
-  cout << ind << "D: \t\t" << f_to_str(D) << " [float_t] \t\t/* Diffusion constant */\n";
-  cout << ind << "space_step: \t\t" << space_step << " [float_t] \t\t/* Characteristic step length */\n";
-  cout << ind << "time_step: \t\t" << time_step << " [float_t] \t\t/* Minimum (maximum?) sensible timestep */\n";
+  cout << ind << "D: \t\t" << f_to_str(D) << " [double] \t\t/* Diffusion constant */\n";
+  cout << ind << "space_step: \t\t" << space_step << " [double] \t\t/* Characteristic step length */\n";
+  cout << ind << "time_step: \t\t" << time_step << " [double] \t\t/* Minimum (maximum?) sensible timestep */\n";
   cout << ind << "flags: \t\t" << BaseSpeciesCplxMolFlag::to_str() << "\n";
   cout << ind << "CplxInstance:\n";
   Cplx::dump(true, ind + "  ");
