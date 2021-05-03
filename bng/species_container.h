@@ -168,7 +168,7 @@ public:
     return res;
   }
 
-  bool does_species_exist(const molecule_id_t id) {
+  bool does_species_exist(const species_id_t id) {
     if (id == SPECIES_ID_INVALID) {
       return false;
     }

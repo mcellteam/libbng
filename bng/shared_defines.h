@@ -246,20 +246,14 @@ const uint ID_INVALID2 = UINT32_MAX - 1; // second general invalid id, might be 
 const uint INDEX_INVALID = UINT_INVALID; // general invalid index, should not be used when a definition for a specific type is available
 const uint INDEX_INVALID2 = UINT32_MAX - 2; // second general invalid index, might be used for special values
 
-// molecule id is a unique identifier of a molecule,
-// no 2 molecules may have the same ID in the course of a simulation
-// not used from the BNG lib yet
-typedef uint molecule_id_t;
-const molecule_id_t MOLECULE_ID_INVALID = ID_INVALID;
-
+namespace BNG {
 // unique species id,
 // every distinct species that exists
-// TODO: move to bng?
 typedef uint species_id_t;
 const species_id_t SPECIES_ID_INVALID = ID_INVALID;
 
 typedef uint species_index_t;
-const species_index_t SPECIES_INDEX_INVALID = ID_INVALID;
+const species_index_t SPECIES_INDEX_INVALID = INDEX_INVALID;
 
 // unique pattern id
 typedef uint pattern_id_t;
@@ -286,6 +280,8 @@ const rxn_class_pathway_index_t PATHWAY_INDEX_INVALID = -11; // just some ad-hoc
 // index of a reaction classes in an array of reaction classes
 typedef int rxn_class_index_t;
 const rxn_class_index_t RNX_CLASS_INDEX_INVALID = INT_INVALID;
+
+} // namespace BNG
 
 #ifndef NDEBUG
 // FIXME: disable this even for debug build
@@ -379,7 +375,7 @@ public:
       // INDEXER_WA must be disabled for this to compile
       this->shrink_to_fit();
 #else
-      base_flat_set<molecule_id_t> tmp = *this;
+      base_flat_set<uint> tmp = *this;
       this->swap(tmp);
 #endif
   }

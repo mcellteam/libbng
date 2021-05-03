@@ -47,6 +47,9 @@ std::string f_to_str(const double val, const int n) {
   return res;
 }
 
+} // namespace BNGCommon
+
+namespace BNG {
 
 char orientation_to_char(const orientation_t o) {
   switch (o) {
@@ -58,4 +61,4 @@ char orientation_to_char(const orientation_t o) {
   }
 }
 
-} // namespace BNGCommon
+} // namespace BNG
