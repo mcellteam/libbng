@@ -32,7 +32,7 @@ namespace BNG {
 void BNGEngine::initialize() {
   // insert information on rxn rules into rxn container
   for (const RxnRule& r: data.get_rxn_rules()) {
-	all_rxns.add_and_finalize(r);
+    all_rxns.add_and_finalize(r);
   }
 }
 

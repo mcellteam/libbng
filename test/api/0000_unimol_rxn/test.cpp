@@ -26,7 +26,7 @@ int main() {
 
   // finalize the species add A to to the species list
   A.finalize_species(bng_config, false);
-  species_id_t A_id = bng_engine.get_all_species().find_or_add(A);
+  BNG::species_id_t A_id = bng_engine.get_all_species().find_or_add(A);
 
   // get unimol rxn class, it must exist
   BNG::RxnClass* rxn_class = bng_engine.get_all_rxns().get_unimol_rxn_class(A_id);
@@ -41,7 +41,7 @@ int main() {
   const BNG::RxnClassPathway& pathway = rxn_class->pathways[0];
   release_assert(pathway.product_species_w_indices.size() == 1);
 
-  species_id_t prod_id = pathway.product_species_w_indices[0].product_species_id;
+  BNG::species_id_t prod_id = pathway.product_species_w_indices[0].product_species_id;
 
   const BNG::Species& product = bng_engine.get_all_species().get(prod_id);
 

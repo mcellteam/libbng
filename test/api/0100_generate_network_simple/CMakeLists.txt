@@ -1,4 +1,4 @@
-project(0000_unimol_rxn)
+project(0100_generate_network_simple)
 
 set(SOURCE_FILES
   test.cpp

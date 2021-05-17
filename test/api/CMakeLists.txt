@@ -12,7 +12,7 @@ include_directories(
   "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/sparsehash/src/"
 )
 
-if (${CMAKE_BUILD_TYPE} STREQUAL Debug)
+if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
   set(BNG_DIR debug)
 else ()
   set(BNG_DIR release)
@@ -45,7 +45,7 @@ SUBDIRLIST(SUBDIRS ${CMAKE_CURRENT_SOURCE_DIR})
 
 # add all subdirectories
 foreach(SUBDIR ${SUBDIRS})
-  if (NOT ${SUBDIR} STREQUAL shared)
+  if ((NOT ${SUBDIR} STREQUAL shared) AND (NOT ${SUBDIR} STREQUAL __pycache__))
     add_subdirectory(${SUBDIR})
   endif()
 endforeach()

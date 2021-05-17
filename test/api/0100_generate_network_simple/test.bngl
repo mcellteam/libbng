@@ -1,0 +1,12 @@
+
+begin seed species
+  A 10
+  B 10
+  D 10
+end seed species  
+
+begin reaction rules
+  A + B <-> C 1e3, 1
+  C + D <-> E 1e4, 2
+  E + B <-> A + D 1e5, 3
+end reaction rules
