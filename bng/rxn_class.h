@@ -219,7 +219,7 @@ public:
 
   void remove_from_rxn_rule_users_list();
 
-  std::string to_str(const std::string ind = "") const;
+  std::string to_str(const std::string ind = "", const bool as_bngl = false) const;
 
   static void dump_array(const std::vector<RxnClass>& vec);
   void dump(const std::string ind = "") const;
@@ -232,7 +232,7 @@ private:
 
   void debug_check_bimol_vol_rxn_flag() const;
 
-  std::string reactants_to_str() const;
+  std::string reactants_to_str(const bool as_bngl = false) const;
 
   double get_reactant_diffusion(const uint reactant_index) const;
   double get_reactant_space_step(const uint reactant_index) const;

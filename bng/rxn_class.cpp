@@ -551,53 +551,82 @@ void RxnClass::update_variable_rxn_rates(const double current_time) {
 }
 
 
-std::string RxnClass::reactants_to_str() const {
+std::string RxnClass::reactants_to_str(const bool as_bngl) const {
   stringstream ss;
-  ss << all_species.get(reactant_ids[0]).name << " (" << reactant_ids[0] << ")";
+  ss << all_species.get(reactant_ids[0]).name;
+  if (!as_bngl) {
+    ss << " (" << reactant_ids[0] << ")";
+  }
   if (reactant_ids.size() == 2) {
-    ss << " + " << all_species.get(reactant_ids[1]).name << " (" << reactant_ids[1] << ")";
+    ss << " + " << all_species.get(reactant_ids[1]).name;
+    if (!as_bngl) {
+      ss << " (" << reactant_ids[1] << ")";
+    }
   }
   return ss.str();
 }
 
 
-std::string RxnClass::to_str(const std::string ind) const {
+std::string RxnClass::to_str(const std::string ind, const bool as_bngl) const {
   stringstream out;
   assert(reactant_ids.size() == 1 || reactant_ids.size() == 2);
-  out << ind << "rxn class for reactants: \n    " << reactants_to_str() << "\n";
+  if (as_bngl) {
+    // must be initialized and have at least one rxn
+    release_assert(pathways_and_rates_initialized);
+    release_assert(!rxn_rule_ids.empty());
 
-  if (!pathways_and_rates_initialized) {
-    out << "  pathways were not initialized\n";
-  }
+    for (size_t i = 0; i < pathways.size(); i++) {
 
-  if (rxn_rule_ids.empty()) {
-    out << "  no pathways\n";
-    return out.str();
-  }
+      out << reactants_to_str(as_bngl) << " -> ";
 
-  for (size_t i = 0; i < pathways.size(); i++) {
-    out << i << ": ";
-    const RxnClassPathway& pw = pathways[i];
-    RxnRule* rxn = all_rxns.get(pw.rxn_rule_id);
+      const RxnClassPathway& pw = pathways[i];
 
-    out << "products based on rule " << rxn->to_str(true, false) << "\n    ";
-    for (size_t k = 0; k < pw.product_species_w_indices.size(); k++) {
-      species_id_t sid = pw.product_species_w_indices[k].product_species_id;
-      out << all_species.get(sid).to_str() << " (" << sid << ") ";
-      if (k != pw.product_species_w_indices.size() - 1) {
-        out << " + ";
+      for (size_t k = 0; k < pw.product_species_w_indices.size(); k++) {
+        species_id_t sid = pw.product_species_w_indices[k].product_species_id;
+        out << all_species.get(sid).to_str();
+        if (k != pw.product_species_w_indices.size() - 1) {
+          out << " + ";
+        }
       }
+
+      // TODO: rates
     }
-    out << "\n";
   }
+  else {
+    out << ind << "rxn class for reactants: \n    " << reactants_to_str() << "\n";
 
-  out << ind << "cum_probs: ";
-  for (const RxnClassPathway& pw: pathways) {
-      out << pw.cum_prob << ", ";
+    if (!pathways_and_rates_initialized) {
+      out << "  pathways were not initialized\n";
+    }
+
+    if (rxn_rule_ids.empty()) {
+      out << "  no pathways\n";
+      return out.str();
+    }
+
+    for (size_t i = 0; i < pathways.size(); i++) {
+      out << i << ": ";
+      const RxnClassPathway& pw = pathways[i];
+      RxnRule* rxn = all_rxns.get(pw.rxn_rule_id);
+
+      out << "products based on rule " << rxn->to_str(true, false) << "\n    ";
+      for (size_t k = 0; k < pw.product_species_w_indices.size(); k++) {
+        species_id_t sid = pw.product_species_w_indices[k].product_species_id;
+        out << all_species.get(sid).to_str() << " (" << sid << ") ";
+        if (k != pw.product_species_w_indices.size() - 1) {
+          out << " + ";
+        }
+      }
+      out << "\n";
+    }
+
+    out << ind << "cum_probs: ";
+    for (const RxnClassPathway& pw: pathways) {
+        out << pw.cum_prob << ", ";
+    }
+
+    out << ind << "max_fixed_p: " << max_fixed_p << "\n";
   }
-
-  out << ind << "max_fixed_p: " << max_fixed_p << "\n";
-
   return out.str();
 }
 
