@@ -174,9 +174,7 @@ public:
     return intermembrane_surf_surf_rxn_flag;
   }
 
-  bool is_absorb_region_border() const {
-    return type == RxnType::AbsorbRegionBorder;
-  }
+  bool is_absorb_region_border() const;
 
   bool is_reflect_transparent_or_absorb_region_border() const {
     return

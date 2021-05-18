@@ -176,7 +176,7 @@ enum class RxnType {
   Standard,
   Transparent,
   Reflect,
-  AbsorbRegionBorder
+  AbsorbRegionBorder // TODO: remove - inconsistent with ALL_MOLECULES
 };
 
 

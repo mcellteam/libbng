@@ -35,6 +35,32 @@ RxnClass::~RxnClass() {
   }
 }
 
+/*
+void RxnClass::finalize() {
+  // if one of reactants is an absorptive surf class and
+  // second is surface molecule, we must set type to RxnType::AbsorbRegionBorder
+  if (rxn_rule_ids.size() >= 1) {
+    const RxnRule* rxn0 = all_rxns.get(rxn_rule_ids[0]);
+    if (rxn0->is_absorptive_region_rxn()) {
+
+      // reactant 0 is always molecule and reactant 2 is surf class
+      // we must use specific reactants for this rxn class
+      const Species& reac0 = all_species.get(reactant_ids[0]);
+      const Species& sc1 = all_species.get(reactant_ids[1]);
+      assert(!reac0.is_reactive_surface());
+      assert(sc1.is_reactive_surface());
+
+      if (rxn0->reactants[1].is_reactive_surface() && rxn0->products.empty()) {
+
+      }
+
+      //  return is_bimol() && reactants[1].is_reactive_surface() && products.empty();
+      //bool reac1_is_surf = reactant_ids
+    }
+  }
+
+}*/
+
 
 // might need to be different for NFsim
 // not sure if this belongs here
@@ -68,6 +94,13 @@ void RxnClass::debug_check_bimol_vol_rxn_flag() const {
       all_rxns.get(rxn_rule_ids[0])->is_bimol_vol_rxn() == bimol_vol_rxn_flag);
 }
 
+
+bool RxnClass::is_absorb_region_border() const {
+  // TODO: check for cases when there may be multiple rxns in thiis class
+  return
+      type == RxnType::AbsorbRegionBorder/* ||
+      (!rxn_rule_ids.empty() && all_rxns.get(rxn_rule_ids[0])->is_absorptive_region_rxn())*/;
+}
 
 bool RxnClass::is_simple() const {
   for (rxn_rule_id_t id: rxn_rule_ids) {
