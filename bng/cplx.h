@@ -156,6 +156,7 @@ public:
   void remove_compartment_from_elem_mols(const compartment_id_t cid);
 
   // returns true if this object as a pattern matches second instance
+  // does not take the species superclasses (ALL_MOLECULES, etc. into account)
   bool matches_pattern(const Cplx& pattern, const bool ignore_orientation = false) const {
     assert(is_finalized() && pattern.is_finalized());
     if (is_simple() && pattern.is_simple()) {

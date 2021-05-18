@@ -95,6 +95,9 @@ public:
   // remove these links in the destructor
   ~RxnClass();
 
+  // return true if neither reactants nor products use components
+  bool is_simple() const;
+
   uint get_num_reactions() const {
     return rxn_rule_ids.size();
   }
@@ -142,19 +145,6 @@ public:
   // already for the current time
   double get_next_time_of_rxn_rate_update() const;
 
-  bool is_standard() const {
-    return type == RxnType::Standard;
-  }
-
-  // there is exactly one reaction for this type
-  bool is_reflect() const {
-    return type == RxnType::Reflect;
-  }
-
-  bool is_transparent() const {
-    return type == RxnType::Transparent;
-  }
-
   bool is_unimol() const {
     return reactant_ids.size() == 1;
   }
@@ -174,16 +164,37 @@ public:
     return intermembrane_surf_surf_rxn_flag;
   }
 
-  bool is_absorb_region_border() const;
+  // for MCell3 compatibility, see comment for is_absorb_region_border_type
+  bool is_absorb_region_border_type_incl_all_molecules() const;
 
-  bool is_reflect_transparent_or_absorb_region_border() const {
-    return
-        is_reflect() ||
-        is_transparent() ||
-        is_absorb_region_border();
+  // checks only type, there is a special case not covered
+  // with ALL_MOLECULES + surf_class -> 0 that does not have this type
+  // to check that use is_absorb_region_border_type_incl_all_molecules()
+  // required for MCell3 compatibility
+  bool is_absorb_region_border_type() const {
+    return type == RxnType::AbsorbRegionBorder;
   }
 
-  bool is_simple() const;
+  // checks only type
+  bool is_reflect_transparent_or_absorb_region_border() const {
+    return
+        is_reflect_type() ||
+        is_transparent_type() ||
+        is_absorb_region_border_type();
+  }
+
+  bool is_standard() const {
+    return type == RxnType::Standard;
+  }
+
+  // there is exactly one reaction for this type
+  bool is_reflect_type() const {
+    return type == RxnType::Reflect;
+  }
+
+  bool is_transparent_type() const {
+    return type == RxnType::Transparent;
+  }
 
   bool is_reactant_species_id(species_id_t reactant_id) const {
     if (is_unimol()) {

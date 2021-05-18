@@ -535,7 +535,7 @@ void SemanticAnalyzer::collect_and_store_implicit_molecule_types() {
   map<string, vector<const ASTMolNode*>> mol_uses_with_same_name;
   for (const ASTMolNode* n: found_mol_nodes) {
     elem_mol_type_id_t mt_id = bng_data->find_elem_mol_type_id(n->name);
-    if (mt_id == MOL_TYPE_ID_INVALID) {
+    if (mt_id == ELEM_MOL_TYPE_ID_INVALID) {
       mol_uses_with_same_name[n->name].push_back(n);
     }
   }
@@ -624,7 +624,7 @@ ElemMol SemanticAnalyzer::convert_molecule_pattern(const ASTMolNode* m) {
 
   // process and remember ID
   elem_mol_type_id_t molecule_type_id = bng_data->find_elem_mol_type_id(m->name);
-  if (molecule_type_id == MOL_TYPE_ID_INVALID) {
+  if (molecule_type_id == ELEM_MOL_TYPE_ID_INVALID) {
     errs_loc(m) << "Molecule type with name '" + m->name + "' was not defined.\n"; // test N0200
     ctx->inc_error_count();
     return mi;
@@ -1156,7 +1156,7 @@ void SemanticAnalyzer::extend_molecule_type_definitions(const ASTCplxNode* cplx_
   for (const ASTMolNode* mol: cplx_node->mols) {
     // was this molecule type already defined?
     elem_mol_type_id_t mt_id = bng_data->find_elem_mol_type_id(mol->name);
-    if (mt_id == MOL_TYPE_ID_INVALID) {
+    if (mt_id == ELEM_MOL_TYPE_ID_INVALID) {
       // no, simply add as a new one
       ElemMolType mt = convert_molecule_type(mol, true);
       bng_data->find_or_add_elem_mol_type(mt);

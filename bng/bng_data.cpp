@@ -53,7 +53,7 @@ state_id_t BNGData::find_state_id(const std::string& name) const {
       return i;
     }
   }
-  return MOL_TYPE_ID_INVALID;
+  return ELEM_MOL_TYPE_ID_INVALID;
 }
 
 
@@ -111,7 +111,7 @@ elem_mol_type_id_t BNGData::find_or_add_elem_mol_type(const ElemMolType& mt) {
   // it a subset of the same components and allowed states
 
   elem_mol_type_id_t existing_mt_id = find_elem_mol_type_id(mt.name);
-  if (existing_mt_id != MOL_TYPE_ID_INVALID) {
+  if (existing_mt_id != ELEM_MOL_TYPE_ID_INVALID) {
     return existing_mt_id;
   }
 
@@ -130,7 +130,7 @@ elem_mol_type_id_t BNGData::find_elem_mol_type_id(const std::string& name) const
       return i;
     }
   }
-  return MOL_TYPE_ID_INVALID;
+  return ELEM_MOL_TYPE_ID_INVALID;
 }
 
 

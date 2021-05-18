@@ -77,7 +77,7 @@ const bond_value_t BOND_VALUE_ANY = UINT32_MAX - 3; // for '?' in patterns such 
 
 
 typedef uint elem_mol_type_id_t;
-const elem_mol_type_id_t MOL_TYPE_ID_INVALID = ID_INVALID;
+const elem_mol_type_id_t ELEM_MOL_TYPE_ID_INVALID = ID_INVALID;
 
 typedef uint compartment_id_t;
 const compartment_id_t COMPARTMENT_ID_INVALID = UINT32_MAX; // same as ID_INVALID;

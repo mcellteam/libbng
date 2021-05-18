@@ -102,7 +102,7 @@ public:
 
 public:
   ElemMol() :
-    elem_mol_type_id(MOL_TYPE_ID_INVALID), compartment_id(COMPARTMENT_ID_NONE)  {
+    elem_mol_type_id(ELEM_MOL_TYPE_ID_INVALID), compartment_id(COMPARTMENT_ID_NONE)  {
   }
 
   // returns true if all components are present and their is state set

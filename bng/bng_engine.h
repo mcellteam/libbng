@@ -60,12 +60,28 @@ public:
 
   std::string get_stats_report() const;
 
-  bool matches_ignore_orientation(
+  bool matches_pattern_incl_all_mols_ignore_orientation(
       const Cplx& cplx_pattern,
       const species_id_t species_id
   ) {
-    const Cplx& cplx = all_species.get_as_cplx(species_id);
-    return cplx.matches_pattern(cplx_pattern, true);
+    // check all_mols
+    const Cplx& cplx_species = all_species.get_as_cplx(species_id);
+    if (cplx_pattern.is_simple()) {
+      elem_mol_type_id_t eid = cplx_pattern.elem_mols[0].elem_mol_type_id;
+      if (eid == all_species.get_all_molecules_elem_mol_type_id()) {
+        return true;
+      }
+      else if (eid == all_species.get_all_volume_molecules_elem_mol_type_id() &&
+          cplx_species.is_vol()) {
+        return true;
+      }
+      else if (eid == all_species.get_all_surface_molecules_elem_mol_type_id() &&
+          cplx_species.is_surf()) {
+        return true;
+      }
+    }
+
+    return cplx_species.matches_pattern(cplx_pattern, true);
   }
 
   species_id_t get_rxn_product_species_id(

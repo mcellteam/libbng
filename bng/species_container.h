@@ -42,6 +42,9 @@ public:
       all_molecules_species_id(SPECIES_ID_INVALID),
       all_volume_molecules_species_id(SPECIES_ID_INVALID),
       all_surface_molecules_species_id(SPECIES_ID_INVALID),
+      all_molecules_elem_mol_type_id(ELEM_MOL_TYPE_ID_INVALID),
+      all_volume_molecules_elem_mol_type_id(ELEM_MOL_TYPE_ID_INVALID),
+      all_surface_molecules_elem_mol_type_id(ELEM_MOL_TYPE_ID_INVALID),
       max_time_step(1.0) {
   }
 
@@ -214,18 +217,21 @@ public:
     return species_id_to_index_mapping;
   }
 
-  void set_all_molecules_species_id(species_id_t id) {
+  void set_all_molecules_ids(const species_id_t sid, const elem_mol_type_id_t eid) {
     // superspecies are always considered to be instantiated
-    all_molecules_species_id = id;
-    initalize_superspecies(id);
+    all_molecules_species_id = sid;
+    all_molecules_elem_mol_type_id = eid;
+    initalize_superspecies(sid);
   }
-  void set_all_volume_molecules_species_id(species_id_t id) {
-    all_volume_molecules_species_id = id;
-    initalize_superspecies(id);
+  void set_all_volume_molecules_ids(const species_id_t sid, const elem_mol_type_id_t eid) {
+    all_volume_molecules_species_id = sid;
+    all_volume_molecules_elem_mol_type_id = eid;
+    initalize_superspecies(sid);
   }
-  void set_all_surface_molecules_species_id(species_id_t id) {
-    all_surface_molecules_species_id = id;
-    initalize_superspecies(id);
+  void set_all_surface_molecules_ids(const species_id_t sid, const elem_mol_type_id_t eid) {
+    all_surface_molecules_species_id = sid;
+    all_surface_molecules_elem_mol_type_id = eid;
+    initalize_superspecies(sid);
   }
 
   species_id_t get_all_molecules_species_id() const {
@@ -236,6 +242,16 @@ public:
   }
   species_id_t get_all_surface_molecules_species_id() const {
     return all_surface_molecules_species_id;
+  }
+
+  species_id_t get_all_molecules_elem_mol_type_id() const {
+    return all_molecules_elem_mol_type_id;
+  }
+  species_id_t get_all_volume_molecules_elem_mol_type_id() const {
+    return all_volume_molecules_elem_mol_type_id;
+  }
+  species_id_t get_all_surface_molecules_elem_mol_type_id() const {
+    return all_surface_molecules_elem_mol_type_id;
   }
 
   bool is_species_superclass(species_id_t id) const {
@@ -305,6 +321,11 @@ private:
   species_id_t all_molecules_species_id;
   species_id_t all_volume_molecules_species_id;
   species_id_t all_surface_molecules_species_id;
+
+  // ids of elem mol types used for species superclasses
+  elem_mol_type_id_t all_molecules_elem_mol_type_id;
+  elem_mol_type_id_t all_volume_molecules_elem_mol_type_id;
+  elem_mol_type_id_t all_surface_molecules_elem_mol_type_id;
 
   // maximal time step of any species contained in this species container,
   // this is be useful e.g. when looking for barriers in simulation
