@@ -460,7 +460,7 @@ void RxnClass::init_rxn_pathways_and_rates(const bool force_update) {
 
   pathways.clear();
 
-  // 1) compute binding probability factor
+  // 1) compute binding probability factor (only for MCell)
   double pb_factor = compute_pb_factor();
 
   // 2) define pathways
@@ -622,7 +622,9 @@ std::string RxnClass::to_str(const std::string ind, const bool as_bngl) const {
         }
       }
 
-      // TODO: rates
+      out << " " << all_rxns.get(pw.rxn_rule_id)->base_rate_constant;
+
+      out << "\n";
     }
   }
   else {

@@ -5,10 +5,11 @@ project(libbng)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../libs/nauty ${CMAKE_CURRENT_BINARY_DIR}/nauty)
 
 include_directories(
-	"${CMAKE_SOURCE_DIR}"
-	"${CMAKE_SOURCE_DIR}/.."
+	"${CMAKE_CURRENT_SOURCE_DIR}"
+	"${CMAKE_CURRENT_SOURCE_DIR}/.."
 	"${CMAKE_CURRENT_BINARY_DIR}/deps"
 	"${CMAKE_CURRENT_SOURCE_DIR}/../libs/sparsehash/src/"
+	"${CMAKE_CURRENT_SOURCE_DIR}/../libs/"
 )
 
 add_definitions(-DYY_NO_UNISTD_H)

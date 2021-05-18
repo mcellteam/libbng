@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 2.8.4)
 
 project(api)
 
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../bng ${CMAKE_CURRENT_BINARY_DIR}/bng)
+
+
 # shared definitions for all tests
 include_directories(
   "${CMAKE_CURRENT_SOURCE_DIR}/../../"
@@ -12,15 +15,10 @@ include_directories(
   "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/sparsehash/src/"
 )
 
-if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-  set(BNG_DIR debug)
-else ()
-  set(BNG_DIR release)
-endif ()
 
 link_directories(
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../build/${BNG_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../build/${BNG_DIR}/nauty
+  ${CMAKE_CURRENT_BINARY_DIR}/bng/
+  ${CMAKE_CURRENT_BINARY_DIR}/bng/nauty
 )
 
 if (NOT WIN32 AND NOT APPLE)

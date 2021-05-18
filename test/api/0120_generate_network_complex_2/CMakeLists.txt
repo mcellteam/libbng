@@ -1,4 +1,4 @@
-project(0100_generate_network_simple)
+project(0120_generate_network_complex_2)
 
 set(SOURCE_FILES
   test.cpp

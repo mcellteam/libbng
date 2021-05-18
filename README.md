@@ -20,3 +20,6 @@ Build API tests (not automated yet):
     mkdir -p build/test
     cd build/test
     cmake ../../test/api -DCMAKE_BUILD_TYPE=Debug
+    make -j
+    
+    

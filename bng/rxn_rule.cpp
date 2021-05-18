@@ -1624,7 +1624,6 @@ void RxnRule::create_products_for_complex_rxn(
           ProductSpeciesIdWIndices(species_id, product_w_indices.rule_product_indices));
     }
 
-    assert(pb_factor != 0);
     assert(!cmp_eq(get_rate_constant(), FLT_GIGANTIC));
 
     // the probability is divided by the number of mapping of pattern onto pattern

@@ -1,0 +1,61 @@
+This is the network that we get from BNG2.pl:
+
+begin parameters
+    1 ITERATIONS                        100  # Constant
+    2 MCELL_DIFFUSION_CONSTANT_3D_L2    1e-6  # Constant
+    3 MCELL_DIFFUSION_CONSTANT_3D_R2    1e-6  # Constant
+    4 MCELL_DEFAULT_COMPARTMENT_VOLUME  (1/8)^3  # Constant
+    5 NA_um3                            6.022e8  # Constant
+    6 VOL_RXN                           1  # Constant
+    7 UNIMOL_RXN                        10000  # Constant
+    8 MCELL_REDEFINE_VOL_RXN            NA_um3  # ConstantExpression
+    9 p                                 0.1  # Constant
+   10 koff                              1*UNIMOL_RXN  # ConstantExpression
+   11 L_copyNum                         500  # Constant
+   12 _rateLaw1                         p*koff  # ConstantExpression
+   13 _rateLaw2                         p*koff  # ConstantExpression
+   14 _rateLaw3                         p*koff  # ConstantExpression
+   15 _rateLaw4                         (1-p)*koff  # ConstantExpression
+end parameters
+begin species
+    1 L2(r!1,r!2,r!3).R2(l!1).R2(l!2).R2(l!3) L_copyNum
+    2 L2(r!1,r!2,r).R2(l!1).R2(l!2) 0
+    3 R2(l) 0
+    4 L2(r!1,r,r).R2(l!1) 0
+    5 L2(r,r,r) 0
+end species
+begin reactions
+    1 1 2,3 3*_rateLaw1 #_R1
+    2 1 2,3 3*_rateLaw4 #_R4
+    3 2 3,4 2*_rateLaw2 #_R2
+    4 2 3,4 2*_rateLaw4 #_R4
+    5 4 3,5 _rateLaw3 #_R3
+    6 4 3,5 _rateLaw4 #_R4
+end reactions
+
+
+Output of this test annotated with reactions from the BNG2.pl output:
+
+> 1 2,3  3*_rateLaw1
+L2(r!1,r!2,r!3).R2(l!1).R2(l!2).R2(l!3) -> L2(r!1,r!2,r).R2(l!1).R2(l!2) + R2(l) 1000
+L2(r!1,r!2,r!3).R2(l!1).R2(l!2).R2(l!3) -> L2(r!1,r!2,r).R2(l!1).R2(l!2) + R2(l) 1000
+L2(r!1,r!2,r!3).R2(l!1).R2(l!2).R2(l!3) -> L2(r!1,r!2,r).R2(l!1).R2(l!2) + R2(l) 1000
+
+> 2 1 2,3 3*_rateLaw4 #_R4
+L2(r!1,r!2,r!3).R2(l!1).R2(l!2).R2(l!3) -> L2(r!1,r!2,r).R2(l!1).R2(l!2) + R2(l) 9000
+L2(r!1,r!2,r!3).R2(l!1).R2(l!2).R2(l!3) -> L2(r!1,r!2,r).R2(l!1).R2(l!2) + R2(l) 9000
+L2(r!1,r!2,r!3).R2(l!1).R2(l!2).R2(l!3) -> L2(r!1,r!2,r).R2(l!1).R2(l!2) + R2(l) 9000
+
+> 5 4 3,5 _rateLaw3 #_R3
+L2(r!1,r,r).R2(l!1) -> L2(r,r,r) + R2(l) 1000
+
+> 6 4 3,5 _rateLaw4 #_R4
+L2(r!1,r,r).R2(l!1) -> L2(r,r,r) + R2(l) 9000
+
+> 3 2 3,4 2*_rateLaw2 #_R2
+L2(r!1,r!2,r).R2(l!1).R2(l!2) -> L2(r!1,r,r).R2(l!1) + R2(l) 1000
+L2(r!1,r!2,r).R2(l!1).R2(l!2) -> L2(r!1,r,r).R2(l!1) + R2(l) 1000
+
+> 4 2 3,4 2*_rateLaw4 #_R4
+L2(r!1,r!2,r).R2(l!1).R2(l!2) -> L2(r!1,r,r).R2(l!1) + R2(l) 9000
+L2(r!1,r!2,r).R2(l!1).R2(l!2) -> L2(r!1,r,r).R2(l!1) + R2(l) 9000

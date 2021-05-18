@@ -30,5 +30,6 @@ int main() {
   dump_network(all_rxn_classes);
 
   // check the number of rxn classes we got
-  //assert(all_rxn_classes.size() == 6);
+  assert(all_rxn_classes.size() == 3);
+  assert(get_num_rxns_in_network(all_rxn_classes) == 4);
 }
