@@ -93,7 +93,7 @@ namespace BNGCommon {
 
 const double EPS = 1e-12; // same as EPS_C
 const double SQRT_EPS = 1e-6;
-const double FLT_GIGANTIC = 1e140;
+const double DBL_GIGANTIC = 1e140;
 
 const double BNG_PI = 3.14159265358979323846;
 const double BNG_N_AV = 6.0221417930e23;
@@ -105,11 +105,11 @@ typedef double stime_t; // short time
 
 const pos_t POS_EPS = EPS;
 const pos_t POS_SQRT_EPS = SQRT_EPS;
-const pos_t POS_FLT_GIGANTIC = FLT_GIGANTIC;
+const pos_t POS_GIGANTIC = DBL_GIGANTIC;
 
 const stime_t STIME_EPS = EPS;
 const stime_t STIME_SQRT_EPS = SQRT_EPS;
-const stime_t STIME_FLT_GIGANTIC = FLT_GIGANTIC;
+const stime_t STIME_GIGANTIC = DBL_GIGANTIC;
 #define CHECK_STIME_MAX(v) do { } while (0)
 
 #else
@@ -118,11 +118,11 @@ typedef float stime_t;
 
 const pos_t POS_EPS = 1e-6f; // little higher than FLT_EPSILON that is 1.19e-7
 const pos_t POS_SQRT_EPS = 1e-3f;
-const pos_t POS_FLT_GIGANTIC = 1e38f;
+const pos_t POS_GIGANTIC = 1e38f;
 
 const stime_t STIME_EPS = 2e-6f;
 const stime_t STIME_SQRT_EPS = SQRT_EPS;
-const stime_t STIME_FLT_GIGANTIC = 1e38f;
+const stime_t STIME_GIGANTIC = 1e38f;
 const stime_t STIME_MAX = 100.0f;
 #define CHECK_STIME_MAX(v) do { assert((v) < BNGCommon::STIME_MAX); } while (0)
 #endif
@@ -254,6 +254,10 @@ const species_id_t SPECIES_ID_INVALID = ID_INVALID;
 
 typedef uint species_index_t;
 const species_index_t SPECIES_INDEX_INVALID = INDEX_INVALID;
+
+// rxn rules are always global and presumed to be constant
+typedef uint rxn_rule_id_t;
+const rxn_rule_id_t RXN_RULE_ID_INVALID = ID_INVALID;
 
 // unique pattern id
 typedef uint pattern_id_t;

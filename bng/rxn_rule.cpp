@@ -122,7 +122,7 @@ void RxnRule::define_rxn_pathways_for_specific_reactants(
     }
 
     double prob;
-    if (cmp_eq(get_rate_constant(), FLT_GIGANTIC)) {
+    if (cmp_eq(get_rate_constant(), DBL_GIGANTIC)) {
       // special surface reactions are not scaled
       prob = get_rate_constant();
     }
@@ -1624,7 +1624,7 @@ void RxnRule::create_products_for_complex_rxn(
           ProductSpeciesIdWIndices(species_id, product_w_indices.rule_product_indices));
     }
 
-    assert(!cmp_eq(get_rate_constant(), FLT_GIGANTIC));
+    assert(!cmp_eq(get_rate_constant(), DBL_GIGANTIC));
 
     // the probability is divided by the number of mapping of pattern onto pattern
     // because so many more product sets we will get

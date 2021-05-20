@@ -37,7 +37,7 @@ using BNGCommon::f_to_str;
 using BNGCommon::EPS;
 using BNGCommon::BNG_PI;
 using BNGCommon::BNG_N_AV;
-using BNGCommon::FLT_GIGANTIC;
+using BNGCommon::DBL_GIGANTIC;
 using BNGCommon::fabs_f;
 using BNGCommon::cmp_eq;
 using BNGCommon::distinguishable_f;
@@ -139,10 +139,6 @@ static bool is_species_superclass(const std::string& name) {
 
 
 typedef std::set<compartment_id_t> CompartmentIdSet;
-
-// rxn rules are always global and presumed to be constant
-typedef uint rxn_rule_id_t;
-const rxn_rule_id_t RXN_RULE_ID_INVALID = ID_INVALID;
 
 typedef uint reactant_class_id_t;
 const reactant_class_id_t REACTANT_CLASS_ID_INVALID = ID_INVALID;

@@ -102,6 +102,11 @@ public:
     return rxn_rule_ids.size();
   }
 
+  rxn_rule_id_t get_rxn_rule_id(const uint index) const {
+    assert(index < rxn_rule_ids.size());
+    return rxn_rule_ids[index];
+  }
+
   uint get_num_pathways() const {
     return pathways.size();
   }

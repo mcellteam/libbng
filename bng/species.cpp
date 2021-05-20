@@ -135,8 +135,8 @@ void Species::compute_space_and_time_step(const BNGConfig& config) {
 
   // check if any of the used elementary molecules has custom time or space step
   // 0 means that it was not set
-  double min_custom_time_step = FLT_GIGANTIC;
-  double min_custom_space_step = FLT_GIGANTIC;
+  double min_custom_time_step = DBL_GIGANTIC;
+  double min_custom_space_step = DBL_GIGANTIC;
   bool has_mol_wo_custom_time_step = false;
   bool has_mol_wo_custom_space_step = false;
 
@@ -163,13 +163,13 @@ void Species::compute_space_and_time_step(const BNGConfig& config) {
   }
   // if custom time step was either not set or it is > 1.0 but at least one of the
   // molecules does not have it set, so we must keep the default
-  if (min_custom_time_step == FLT_GIGANTIC ||
+  if (min_custom_time_step == DBL_GIGANTIC ||
       (has_mol_wo_custom_time_step && min_custom_time_step > DEFAULT_TIME_STEP)) {
     min_custom_time_step = 0;
   }
 
   double default_space_step = get_default_space_step(config, D);
-  if (min_custom_space_step == FLT_GIGANTIC ||
+  if (min_custom_space_step == DBL_GIGANTIC ||
       (has_mol_wo_custom_space_step && min_custom_space_step > default_space_step)) {
     min_custom_space_step = 0;
   }
