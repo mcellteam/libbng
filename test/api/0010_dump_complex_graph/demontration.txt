@@ -1,0 +1,45 @@
+This test dumps the graph representation of complex
+
+A(b!1).B(a!1,c~0!2).C(b!2)
+
+This is the debug output:
+
+0: m:0
+ -> 1: c:0~DONT_CARE!1, connections: 3, 
+2: m:1
+ -> 3: c:1~DONT_CARE!1, connections: 1, 
+ -> 4: c:2~0!2, connections: 6, 
+5: m:2
+ -> 6: c:3~DONT_CARE!2, connections: 4, 
+ 
+
+Each elementary molecule type and component type gets a numerical ID:  
+ 
+m:0 == A
+m:1 == B
+m:2 == C
+
+c:0 == b (in mol type A)
+c:1 == a (in mol type B)
+c:2 == c (in mol type B)
+c:2 == b (in mol type C)
+
+A rewritten form of the graph dump above without component 
+states in the form of a coincidence pairs:
+vertex index (name) - vertex index 
+
+0(A) - 1
+1(b) - 3 
+2(B) - 3
+3(a) - 1 
+4(c) - 6 
+5(C) - 6
+6(b) - 4
+
+
+And one more representation without vertex indices:
+
+A-b-a-B-c-C-b 
+
+ 
+  

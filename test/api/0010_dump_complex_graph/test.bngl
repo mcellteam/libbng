@@ -1,0 +1,9 @@
+begin molecule types
+  A(b)
+  B(a,c~0~1)
+  C(b)
+end molecule types
+
+begin seed species
+  A(b!1).B(a!1,c~0!2).C(b!2) 1
+end seed species
