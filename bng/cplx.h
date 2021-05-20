@@ -44,6 +44,10 @@ class Cplx: public BaseSpeciesCplxMolFlag {
 public:
   ElemMolVector elem_mols;
 
+  // string representation of the complex,
+  // set only when canonicalize is called
+  std::string name;
+
 private:
   // not read from BNG yet, but proposal is on its way
   // used in reactions, not in species
@@ -64,6 +68,7 @@ public:
     elem_mols = other.elem_mols;
     orientation = other.orientation;
     bng_data = other.bng_data;
+    name = other.name;
 
     set_flags(other.get_flags());
 
@@ -207,6 +212,15 @@ public:
         matches_fully(other);
   }
 
+  void canonicalize_if_needed() {
+    if (is_canonical()) {
+      return;
+    }
+    else {
+      canonicalize();
+    }
+  }
+
   // sort molecule instances so that all identical complexes use
   // the same ordering
   // default sorting of components is according to molecule types
@@ -243,6 +257,10 @@ private:
 
   bool matches_complex_pattern_ignore_orientation(const Cplx& pattern) const;
   bool matches_complex_fully_ignore_orientation(const Cplx& other) const;
+
+  // these functions may be called only from canonicalize
+  void canonicalize_w_single_elem_mol(const bool sort_components_by_name_do_not_finalize);
+  void canonicalize_complex(const bool sort_components_by_name_do_not_finalize);
 
   void sort_components_and_mols();
   void renumber_bonds();

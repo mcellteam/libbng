@@ -58,19 +58,10 @@ public:
     return bng_data;
   }
 
-private:
-  void canonicalize_species_if_needed(Species* new_species) {
-    assert(new_species->is_finalized());
-    if (!new_species->is_canonical()) {
-      new_species->canonicalize();
-    }
-    assert(new_species->name != "");
-  }
-
 public:
   // makes a copy of the passed species object
   species_id_t find_or_add(Species& new_species, const bool removable = false) {
-    canonicalize_species_if_needed(&new_species);
+    new_species.canonicalize_if_needed();
 
     // check that this species does not exist already
     auto it = canonical_species_map.find(new_species.name);
@@ -90,7 +81,7 @@ public:
   // SpeciesContainer takes ownership of the Species object
   // copying of species can be expensive so some variants rather use pointers
   species_id_t find_or_add_delete_if_exist(Species*& new_species, const bool removable = false) {
-    canonicalize_species_if_needed(new_species);
+    new_species->canonicalize_if_needed();
 
     // check that this species does not exist already
     auto it = canonical_species_map.find(new_species->name);

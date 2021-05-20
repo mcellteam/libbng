@@ -366,30 +366,41 @@ void Cplx::renumber_bonds() {
 }
 
 
-// does not seem to work ...
-// even the usage in nfsim seems to be wrong?
-// TODO: split into multiple functions
 // https://computationalcombinatorics.wordpress.com/2012/09/20/canonical-labelings-with-nauty/
 void Cplx::canonicalize(const bool sort_components_by_name_do_not_finalize) {
   if (elem_mols.size() == 1) {
-
-    for (ElemMol& mi: elem_mols) {
-      if (!sort_components_by_name_do_not_finalize) {
-        // sort components in molecules to their prescribed form
-        // and in a way that the state name is ascending (we have no bonds here)
-        mi.canonicalize(*bng_data);
-      }
-      else {
-        mi.sort_components_by_name(*bng_data);
-      }
-    }
-
-    if (!sort_components_by_name_do_not_finalize) {
-      finalize_cplx();
-    }
-    set_flag(SPECIES_CPLX_FLAG_IS_CANONICAL);
-    return;
+    canonicalize_w_single_elem_mol(sort_components_by_name_do_not_finalize);
   }
+  else {
+    canonicalize_complex(sort_components_by_name_do_not_finalize);
+  }
+
+  // update the boost graph representation
+  if (!sort_components_by_name_do_not_finalize) {
+    finalize_cplx();
+  }
+
+  set_flag(SPECIES_CPLX_FLAG_IS_CANONICAL);
+  name = "";
+  to_str(name);
+}
+
+
+void Cplx::canonicalize_w_single_elem_mol(const bool sort_components_by_name_do_not_finalize) {
+  assert(elem_mols.size() == 1);
+
+  if (!sort_components_by_name_do_not_finalize) {
+    // sort components in molecules to their prescribed form
+    // and in a way that the state name is ascending (we have no bonds here)
+    elem_mols[0].canonicalize(*bng_data);
+  }
+  else {
+    elem_mols[0].sort_components_by_name(*bng_data);
+  }
+}
+
+
+void Cplx::canonicalize_complex(const bool sort_components_by_name_do_not_finalize) {
 
   // we use nauty/traces to construct a canonical version of the graph
   // we are using only the base BNG API, not the boost graphs to stay independent
@@ -616,17 +627,9 @@ void Cplx::canonicalize(const bool sort_components_by_name_do_not_finalize) {
   // 7) and renumber bonds again
   renumber_bonds();
 
-  // 8) update the boost graph representation
-  if (!sort_components_by_name_do_not_finalize) {
-    finalize_cplx();
-  }
-
-  set_flag(SPECIES_CPLX_FLAG_IS_CANONICAL);
-
 #ifdef DEBUG_CANONICALIZATION
   cout << "After " << to_str(*bng_data) << "\n";
 #endif
-
 }
 
 

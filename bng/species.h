@@ -32,7 +32,6 @@ typedef std::vector<Species*> SpeciesVector;
 class Species: public Cplx, public ElemMolTypeSpeciesCommonData {
 public:
   species_id_t id;
-  std::string name; // string representation of the complex
 
   // ----------- MCell-specific -----------
   double space_step;
@@ -55,7 +54,7 @@ public:
       }
     }
 
-    canonicalize(); // sets name as well, calls also Cplx::finalize
+    canonicalize(); // sets name as well
     set_flag(SPECIES_FLAG_CAN_DIFFUSE, D != 0);
     if (is_reactive_surface()) {
       // surfaces are always assumed to be instantiated
@@ -84,7 +83,7 @@ public:
   // we need explicit copy ctor to call CplxInstance's copy ctor
   Species(const Species& other)
     : Cplx(other), ElemMolTypeSpeciesCommonData(other),
-      id(other.id), name(other.name),
+      id(other.id),
       space_step(other.space_step), time_step(other.time_step),
       rxn_flags_were_updated(other.rxn_flags_were_updated), num_instantiations(other.num_instantiations),
       reactant_class_id(other.reactant_class_id) {
@@ -93,16 +92,6 @@ public:
   // used when these species are added as new to the species container
   void reset_num_instantiations() {
     num_instantiations = 0;
-  }
-
-  // TODO: maybe an assignment operator is needed, e.g. in the CplxInstance case, the copy ctor was not
-  // called all the time (not sure why...) and assignment operator was needed to fix an issue
-
-  // default sorting of components is according to molecule types
-  void canonicalize(const bool sort_components_by_name_do_not_finalize = false) {
-    Cplx::canonicalize(sort_components_by_name_do_not_finalize); // calls also CplxInstance::finalize
-    name = "";
-    to_str(name);
   }
 
   // sets SPECIES_FLAG_CAN_VOLVOL, SPECIES_FLAG_CAN_VOLSURF, SPECIES_FLAG_CAN_VOLWALL,
