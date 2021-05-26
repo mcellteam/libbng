@@ -19,19 +19,15 @@ limitations under the License.
 
 import os
 import sys
+import shutil
 import utils
 import platform
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
-WORK_DIR = os.path.join(THIS_DIR, 'work')
 BNGL_EXT = '.bngl'
 
-if 'Windows' in platform.system():
-    EXE_EXT = '.exe'
-else:
-    EXE_EXT = ''
-
-DEFAULT_TEST_APP = 'parser_tester_bnglib'
+BNG_DIR = 'bng'
+DEFAULT_TEST_APP = 'parser_tester_libbng'
 
     
 # returns a list of TestInfo objects
@@ -48,7 +44,7 @@ def get_test_files(dir):
    
 
 # returns true if test passed
-def run_single_test(test_app, test_file, extra_args):
+def run_single_test(work_parser_dir, test_app, test_file, extra_args):
 
     expected_ec = 0
     expected_outputs = []
@@ -69,8 +65,8 @@ def run_single_test(test_app, test_file, extra_args):
             
     cmd = [test_app, test_file]
     cmd += extra_args
-    log_file = os.path.join(WORK_DIR, os.path.basename(test_file) + '.log')
-    ec = utils.run(cmd, cwd=WORK_DIR, fout_name=log_file, verbose=False)
+    log_file = os.path.join(work_parser_dir, os.path.basename(test_file) + '.log')
+    ec = utils.run(cmd, cwd=work_parser_dir, fout_name=log_file, verbose=False)
     
     if (ec != expected_ec):
         print("!FAIL " + test_file + ": exit code was " + str(ec) + ", expected " + str(expected_ec) + 
@@ -89,11 +85,19 @@ def run_single_test(test_app, test_file, extra_args):
     return True
    
    
-def run_tests(build_dir, extra_args):
-    if not os.path.exists(WORK_DIR):
-        os.mkdir(WORK_DIR)
+def run_tests(build_dir, work_dir, extra_args):
+    if not os.path.exists(work_dir):
+        os.mkdir(work_dir)
+        
+    work_parser_dir = os.path.join(work_dir, 'parser') 
+    if os.path.exists(work_parser_dir):
+        shutil.rmtree(work_parser_dir)
+    os.mkdir(work_parser_dir)
     
-    test_app = os.path.join(build_dir, DEFAULT_TEST_APP)
+    test_app = os.path.join(build_dir, BNG_DIR, DEFAULT_TEST_APP + utils.EXE_EXT)
+    
+    if not os.path.exists(test_app):
+        sys.exit("Fatal error: parser test application '" + test_app + "' was not found.")
     
     num_tests = 0
     num_tests_failed = 0        
@@ -102,18 +106,18 @@ def run_tests(build_dir, extra_args):
     tests += get_test_files('positive')
     tests.sort()
     for t in tests:
-        ok = run_single_test(test_app, t, extra_args[0])
+        ok = run_single_test(work_parser_dir, test_app, t, extra_args[0])
         num_tests += 1
         if not ok:
             num_tests_failed += 1
     
     
     if num_tests_failed == 0:
-        print("TESTING PASSED: " + str(num_tests) + " passed")
+        print("PARSER TESTING PASSED: " + str(num_tests) + " passed")
         return 0
     else:
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        print("TESTING FAILED: " + str(num_tests_failed) + " failed out of " + str(num_tests))
+        print("PARSER TESTING FAILED: " + str(num_tests_failed) + " failed out of " + str(num_tests))
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         return 1
 

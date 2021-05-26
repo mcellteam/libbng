@@ -2,9 +2,6 @@ cmake_minimum_required(VERSION 2.8.4)
 
 project(api)
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../bng ${CMAKE_CURRENT_BINARY_DIR}/bng)
-
-
 # shared definitions for all tests
 include_directories(
   "${CMAKE_CURRENT_SOURCE_DIR}/../../"

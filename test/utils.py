@@ -29,6 +29,12 @@ from threading import Timer
 from subprocess import Popen, PIPE
           
 
+if 'Windows' in platform.system():
+    EXE_EXT = '.exe'
+else:
+    EXE_EXT = ''
+    
+    
 def get_cwd_no_link():
     # get current working directory even though we are in a symlinked directory
     # the shell argument must be set to True in this case
