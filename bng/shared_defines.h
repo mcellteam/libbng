@@ -318,8 +318,8 @@ static inline std::ostream& errs() {
 }
 
 static inline std::ostream& warns() {
-  std::cout << "warning: ";
-  return std::cout;
+  std::cerr << "warning: ";
+  return std::cerr;
 }
 
 static inline std::ostream& notifys() {
