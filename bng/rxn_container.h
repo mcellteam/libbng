@@ -221,18 +221,17 @@ public:
 
   void remove_species_id_references(const species_id_t id);
 
-  const ReactantClassIdSet& get_reacting_classes(const species_id_t species_id) {
+  const ReactantClassIdSet& get_reacting_classes(Species& species) {
 
     // get or compute species reactant class
     reactant_class_id_t reactant_class_id;
-    Species& species = all_species.get(species_id);
     assert(species.is_vol() && "Reacting classes are currently supported only for volume molecules");
 
     if (species.has_valid_reactant_class_id()) {
       reactant_class_id = species.get_reactant_class_id();
     }
     else {
-      reactant_class_id = compute_reactant_class_for_species(species_id);
+      reactant_class_id = compute_reactant_class_for_species(species.id);
       species.set_reactant_class_id(reactant_class_id);
     }
 
