@@ -113,16 +113,7 @@ public:
   void update_all_mols_and_mol_type_compartments();
 
   // this method is supposed to be used only during initialization
-  rxn_rule_id_t add_and_finalize(const RxnRule& r) {
-    // TODO LATER: check that we don't have this rule already
-
-    // store a copy
-    RxnRule* new_r = new RxnRule(r);
-    new_r->id = rxn_rules.size();
-    new_r->finalize();
-    rxn_rules.push_back(new_r);
-    return new_r->id;
-  }
+  rxn_rule_id_t add_and_finalize(const RxnRule& r);
 
   // - might invalidate Species reference
   // - returns nullptr when there are no rxns, never returns an empty rxn class

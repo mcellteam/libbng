@@ -114,6 +114,19 @@ void RxnContainer::update_all_mols_and_mol_type_compartments() {
 }
 
 
+// this method is supposed to be used only during initialization
+rxn_rule_id_t RxnContainer::add_and_finalize(const RxnRule& r) {
+  // TODO LATER: check that we don't have this rule already
+
+  // store a copy
+  RxnRule* new_r = new RxnRule(r);
+  new_r->id = rxn_rules.size();
+  new_r->finalize();
+  rxn_rules.push_back(new_r);
+  return new_r->id;
+}
+
+
 RxnClass* RxnContainer::get_or_create_empty_unimol_rxn_class(const species_id_t reac_id) {
 
   auto it = unimol_rxn_class_map.find(reac_id);

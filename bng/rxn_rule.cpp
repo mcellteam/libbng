@@ -214,12 +214,16 @@ void RxnRule::finalize() {
   bool simple = true;
 
   // finalize all reactants and products
+  // also canonicalize the reactants and products so that a consistent
+  // output is printed and 'name' of the complex reactants and products is set
   for (Cplx& ci: reactants) {
+    ci.canonicalize();
     ci.finalize_cplx();
     simple = simple && ci.is_simple();
   }
 
   for (Cplx& ci: products) {
+    ci.canonicalize();
     ci.finalize_cplx();
     simple = simple && ci.is_simple();
   }
@@ -2317,17 +2321,15 @@ void RxnRule::dump_cplx_vector(
     cout << ind << "Cplx " << i << ":\n";
     complexes[i].dump(true, ind + "  ");
 
-    if (!is_simple()) {
-      cout << ind + "  " << "  graph:\n";
-      dump_graph(complexes[i].get_graph(), bng_data, ind + "  ");
-    }
+    cout << ind + "  " << "  graph:\n";
+    dump_graph(complexes[i].get_graph(), bng_data, ind + "  ");
     cout << "\n";
   }
 }
 
 
 void RxnRule::dump(
-    const bool for_diff, const std::string ind, std::ostream& out_reaction_rules) const {
+    const bool for_diff, const std::string ind) const {
   if (!for_diff) {
     cout << ind << to_str();
   }

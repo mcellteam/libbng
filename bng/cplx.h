@@ -212,6 +212,8 @@ public:
         matches_fully(other);
   }
 
+  // must not be run on a reaction rule reactant or product
+  // after its products were pre-computed
   void canonicalize_if_needed() {
     if (is_canonical()) {
       return;
@@ -224,6 +226,8 @@ public:
   // sort molecule instances so that all identical complexes use
   // the same ordering
   // default sorting of components is according to molecule types
+  // must not be run on a reaction rule reactant or product
+  // after its products were pre-computed
   void canonicalize(const bool sort_components_by_name_do_not_finalize = false);
 
   // appends to string res
