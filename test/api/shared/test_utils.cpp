@@ -124,8 +124,8 @@ void generate_network(BNGEngine& bng_engine, set<RxnClass*>& all_rxn_classes) {
   }
 }
 
-uint get_num_rxns_in_network(const std::set<BNG::RxnClass*>& all_rxn_classes) {
-  uint res = 0;
+unsigned int get_num_rxns_in_network(const std::set<BNG::RxnClass*>& all_rxn_classes) {
+  unsigned int res = 0;
   for (const RxnClass* rxn_class: all_rxn_classes) {
     res += rxn_class->get_num_pathways();
   }
