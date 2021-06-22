@@ -97,7 +97,13 @@ def run_tests(build_dir, work_dir, extra_args):
     test_app = os.path.join(build_dir, BNG_DIR, DEFAULT_TEST_APP + utils.EXE_EXT)
     
     if not os.path.exists(test_app):
-        sys.exit("Fatal error: parser test application '" + test_app + "' was not found.")
+        # try Windows build location
+        test_app = os.path.join(build_dir, '..', '..', 'bin', DEFAULT_TEST_APP + utils.EXE_EXT)
+        
+        if not os.path.exists(test_app):
+            sys.exit("Fatal error: parser test application '" + test_app + "' was not found.")
+        else:
+            print("Using fallback parser test location '" + test_app + "'.")
     
     num_tests = 0
     num_tests_failed = 0        

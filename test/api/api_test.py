@@ -26,7 +26,6 @@ THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 def collect_test_names():
-    
     res = []
     print("Collecting tests in " + THIS_DIR)
     files = os.listdir(THIS_DIR)
@@ -40,7 +39,12 @@ def collect_test_names():
 
 def run_single_test(build_dir, work_api_dir, name):
     
-    test_path = os.path.join(build_dir, 'test', 'api', name, name + utils.EXE_EXT)
+    build_type = ''
+    if os.name == 'nt':
+        # use Release by default
+        build_type = 'Release'
+    
+    test_path = os.path.join(build_dir, 'test', 'api', name, build_type, name + utils.EXE_EXT)
     if not os.path.exists(test_path):
         sys.exit("Fatal error: API test executable '" + test_path + 
                  "' does not exist, libbng must be built with tests first.")
