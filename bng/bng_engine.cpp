@@ -74,17 +74,17 @@ Cplx BNGEngine::create_cplx_from_species(
 std::string BNGEngine::export_to_bngl(
     std::ostream& out_parameters,
     std::ostream& out_molecule_types,
-    std::ostream& out_reaction_rules,
     std::ostream& out_compartments,
+    std::ostream& out_reaction_rules,
     const bool rates_for_nfsim,
     const double volume_um3_for_nfsim,
     const double area_um3_for_nfsim) const {
 
   if (rates_for_nfsim) {
-    out_parameters << IND << PARAM_RATE_CONV_VOL << " " << f_to_str(volume_um3_for_nfsim) << " * 1e-15 # compartment volume in litres\n";
+    out_parameters << IND << PARAM_RATE_CONV_VOLUME << " " << f_to_str(volume_um3_for_nfsim) << " * 1e-15 # compartment volume in litres\n";
   }
   else {
-    out_parameters << IND << PARAM_RATE_CONV_VOL << " 1e-15 # um^3 to litres\n";
+    out_parameters << IND << PARAM_RATE_CONV_VOLUME << " 1e-15 # um^3 to litres\n";
   }
 
   export_molecule_types_as_bngl(out_parameters, out_molecule_types);
@@ -129,9 +129,9 @@ std::string BNGEngine::export_reaction_rules_as_bngl(
   out_reaction_rules << BEGIN_REACTION_RULES << "\n";
 
   out_parameters << "\n" << BNG::IND << "# parameters to control rates in MCell and BioNetGen\n";
-  out_parameters << IND << PARAM_NA_V << " " << NA_VALUE_STR << " * " << PARAM_RATE_CONV_VOL << "\n";
+  out_parameters << IND << PARAM_MCELL2BNG_VOL_CONV << " " << NA_VALUE_STR << " * " << PARAM_RATE_CONV_VOLUME << "\n";
   out_parameters << IND << PARAM_VOL_RXN << " 1\n";
-  out_parameters << IND << MCELL_REDEFINE_PREFIX << PARAM_VOL_RXN << " " << PARAM_NA_V << "\n";
+  out_parameters << IND << MCELL_REDEFINE_PREFIX << PARAM_VOL_RXN << " " << PARAM_MCELL2BNG_VOL_CONV << "\n";
   out_parameters << "\n" << BNG::IND << "# reaction rates\n";
 
   for (size_t i = 0; i < get_all_rxns().get_rxn_rules_vector().size(); i++) {
@@ -142,7 +142,7 @@ std::string BNGEngine::export_reaction_rules_as_bngl(
     string rate_param = "k" + to_string(i);
     out_parameters << IND << rate_param << " " << f_to_str(rr->base_rate_constant);
     if (rr->is_bimol_vol_rxn()) {
-      out_parameters  << " / NA_V * " << PARAM_VOL_RXN;
+      out_parameters  << " / " << PARAM_MCELL2BNG_VOL_CONV << " * " << PARAM_VOL_RXN;
     }
     else if (rr->is_surf_rxn() || rr->is_reactive_surface_rxn()) {
       // TODO: only error msg and continue
@@ -173,12 +173,27 @@ std::string BNGEngine::export_compartments_as_bngl(
     }
 
     if (comp.is_3d) {
-      string vol_name = PREFIX_VOL + comp.name;
+      string vol_name = PREFIX_VOLUME + comp.name;
 
       out_parameters << IND << vol_name << " " <<
           f_to_str(comp.get_volume_or_area()) << " # um^3\n";
 
-      out_compartments << IND << comp.name << " 3 " << vol_name << "\n";
+      out_compartments << IND << comp.name << " 3 " << vol_name;
+    }
+    else {
+      string area_name = PREFIX_AREA + comp.name;
+
+      out_parameters << IND << area_name << " " <<
+          f_to_str(comp.get_volume_or_area()) << " # um^2\n";
+
+      out_compartments << IND << comp.name << " 2 " << area_name << " * " << PARAM_THICKNESS;
+    }
+
+    if (comp.parent_compartment_id != COMPARTMENT_ID_INVALID) {
+      out_compartments << " " << data.get_compartment(comp.parent_compartment_id).name << "\n";
+    }
+    else {
+      out_compartments << "\n";
     }
   }
 

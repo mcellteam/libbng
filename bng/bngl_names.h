@@ -56,9 +56,10 @@ const char* const MCELL_REDEFINE_PREFIX = "MCELL_REDEFINE_";
 
 const char* const PARAM_VOL_RXN = "VOL_RXN";
 const char* const NA_VALUE_STR = "6.02214e23";
-const char* const PARAM_NA_V = "NA_V";
-const char* const PREFIX_VOL = "VOL_";
-const char* const PARAM_RATE_CONV_VOL = "RATE_CONV_VOL";
+const char* const PARAM_MCELL2BNG_VOL_CONV = "MCELL2BNG_VOL_CONV";
+const char* const PREFIX_VOLUME = "VOLUME_";
+const char* const PREFIX_AREA = "AREA_";
+const char* const PARAM_RATE_CONV_VOLUME = "RATE_CONV_VOLUME";
 const char* const PARAM_THICKNESS = "THICKNESS";
 const char* const THICKNESS_VALUE_STR = "0.01 # um";
 
