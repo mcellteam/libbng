@@ -59,30 +59,33 @@ public:
 class Compartment {
 public:
   Compartment()
-    : id(COMPARTMENT_ID_INVALID), is_3d(true), volume(FLT_INVALID),
+    : id(COMPARTMENT_ID_INVALID), is_3d(true), volume_or_area(FLT_INVALID),
       parent_compartment_id(COMPARTMENT_ID_INVALID)
       {
   }
   compartment_id_t id;
   std::string name;
   bool is_3d; // 2d if this member is false
+
 private:
-  double volume;
+  double volume_or_area; // in um^3/um^2, if is_3d is true then this is volume, area otherwise
+
 public:
   compartment_id_t parent_compartment_id; // COMPARTMENT_ID_INVALID if the compartment has no parents
   CompartmentIdSet children_compartments; // those are direct children
 
-  bool is_volume_set() const {
-    return volume != FLT_INVALID;
+  bool is_volume_or_area_set() const {
+    return volume_or_area != FLT_INVALID;
   }
 
-  double get_volume() const {
-    assert(is_volume_set());
-    return volume;
+  //
+  double get_volume_or_area() const {
+    assert(is_volume_or_area_set());
+    return volume_or_area;
   }
 
-  void set_volume(const double volume_) {
-    volume = volume_;
+  void set_volume_or_area(const double volume_or_area_) {
+    volume_or_area = volume_or_area_;
   }
 
   bool has_parent() const {

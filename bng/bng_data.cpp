@@ -240,7 +240,8 @@ void BNGData::dump_compartments() const {
   cout <<  BEGIN_COMPARTMENTS << "\n";
 
   for (const Compartment& c: compartments) {
-    cout << IND << c.name << " " << (c.is_3d ? 3 : 2) << " " << (c.is_volume_set() ? c.get_volume() : FLT_INVALID);
+    cout << IND << c.name << " " << (c.is_3d ? 3 : 2) << " " <<
+        (c.is_volume_or_area_set() ? c.get_volume_or_area() : FLT_INVALID);
     if (c.parent_compartment_id != COMPARTMENT_ID_INVALID) {
       cout << " " << get_compartment(c.parent_compartment_id).name;
     }

@@ -75,19 +75,23 @@ std::string BNGEngine::export_to_bngl(
     std::ostream& out_parameters,
     std::ostream& out_molecule_types,
     std::ostream& out_reaction_rules,
+    std::ostream& out_compartments,
     const bool rates_for_nfsim,
-    const double volume_um3,
-    const double area_um3) const {
+    const double volume_um3_for_nfsim,
+    const double area_um3_for_nfsim) const {
 
   if (rates_for_nfsim) {
-    out_parameters << IND << PARAM_RATE_CONV_VOL << " " << f_to_str(volume_um3) << " * 1e-15 # compartment volume in litres\n";
+    out_parameters << IND << PARAM_RATE_CONV_VOL << " " << f_to_str(volume_um3_for_nfsim) << " * 1e-15 # compartment volume in litres\n";
   }
   else {
     out_parameters << IND << PARAM_RATE_CONV_VOL << " 1e-15 # um^3 to litres\n";
   }
 
   export_molecule_types_as_bngl(out_parameters, out_molecule_types);
+
   string err_msg = export_reaction_rules_as_bngl(out_parameters, out_reaction_rules);
+
+  err_msg += export_compartments_as_bngl(out_parameters, out_compartments);
 
   return err_msg;
 }
@@ -141,6 +145,7 @@ std::string BNGEngine::export_reaction_rules_as_bngl(
       out_parameters  << " / NA_V * " << PARAM_VOL_RXN;
     }
     else if (rr->is_surf_rxn() || rr->is_reactive_surface_rxn()) {
+      // TODO: only error msg and continue
       return "Export of surface reactions to BNGL is not supported yet, error for " + rxn_as_bngl + ".";
     }
     out_parameters << "\n";
@@ -154,5 +159,32 @@ std::string BNGEngine::export_reaction_rules_as_bngl(
   return "";
 }
 
+
+std::string BNGEngine::export_compartments_as_bngl(
+    std::ostream& out_parameters,
+    std::ostream& out_compartments) const {
+
+  out_compartments << BEGIN_COMPARTMENTS << "\n";
+
+  for (const Compartment& comp: data.get_compartments()) {
+    if (comp.name == DEFAULT_COMPARTMENT_NAME) {
+      // ignored
+      continue;
+    }
+
+    if (comp.is_3d) {
+      string vol_name = PREFIX_VOL + comp.name;
+
+      out_parameters << IND << vol_name << " " <<
+          f_to_str(comp.get_volume_or_area()) << " # um^3\n";
+
+      out_compartments << IND << comp.name << " 3 " << vol_name << "\n";
+    }
+  }
+
+  out_compartments << END_COMPARTMENTS << "\n";
+
+  return "";
+}
 
 } // namespace BNG
