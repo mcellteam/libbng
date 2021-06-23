@@ -75,9 +75,16 @@ std::string BNGEngine::export_to_bngl(
     std::ostream& out_parameters,
     std::ostream& out_molecule_types,
     std::ostream& out_reaction_rules,
-    const double volume_um3) const {
+    const bool rates_for_nfsim,
+    const double volume_um3,
+    const double area_um3) const {
 
-  out_parameters << IND << PARAM_V << " " << f_to_str(volume_um3) << " * 1e-15 # volume in litres\n";
+  if (rates_for_nfsim) {
+    out_parameters << IND << PARAM_RATE_CONV_VOL << " " << f_to_str(volume_um3) << " * 1e-15 # compartment volume in litres\n";
+  }
+  else {
+    out_parameters << IND << PARAM_RATE_CONV_VOL << " 1e-15 # um^3 to litres\n";
+  }
 
   export_molecule_types_as_bngl(out_parameters, out_molecule_types);
   string err_msg = export_reaction_rules_as_bngl(out_parameters, out_reaction_rules);
@@ -118,7 +125,7 @@ std::string BNGEngine::export_reaction_rules_as_bngl(
   out_reaction_rules << BEGIN_REACTION_RULES << "\n";
 
   out_parameters << "\n" << BNG::IND << "# parameters to control rates in MCell and BioNetGen\n";
-  out_parameters << IND << PARAM_NA_V << " " << NA_VALUE_STR << " * " << PARAM_V << "\n";
+  out_parameters << IND << PARAM_NA_V << " " << NA_VALUE_STR << " * " << PARAM_RATE_CONV_VOL << "\n";
   out_parameters << IND << PARAM_VOL_RXN << " 1\n";
   out_parameters << IND << MCELL_REDEFINE_PREFIX << PARAM_VOL_RXN << " " << PARAM_NA_V << "\n";
   out_parameters << "\n" << BNG::IND << "# reaction rates\n";

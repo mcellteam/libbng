@@ -111,7 +111,9 @@ public:
       std::ostream& out_parameters,
       std::ostream& out_molecule_types,
       std::ostream& out_reaction_rules,
-      const double volume_um3) const;
+      const bool rates_for_nfsim,
+      const double volume_um3,
+      const double area_um3) const;
 
   void print_periodic_stats() const {
     std::cout << "BNG report: " << get_stats_report() << "\n";
