@@ -132,9 +132,9 @@ static void generate_rxn_rate_conversion_factors(
     out_parameters << IND << PARAM_RATE_CONV_VOLUME << " " <<
         f_to_str(volume_um3_for_nfsim) << " * 1e-15\n";
     out_parameters << "\n";
-    out_parameters << IND << "# surface-surface rxn rate conversion factor for NFSim, in um\n";
-    out_parameters << IND << PARAM_RATE_CONV_THICKNESS << " " <<
-        f_to_str(area_um3_for_nfsim) << " * " << PARAM_THICKNESS << " * 1e-15\n";
+    out_parameters << IND << "# surface-surface rxn rate conversion factor for NFSim\n";
+    out_parameters << IND << PARAM_RATE_CONV_THICKNESS <<
+        " 1/" <<  f_to_str(area_um3_for_nfsim) << "\n";
   }
   else {
     out_parameters << IND << "# volume rxn rate conversion factor for um^3 to litres\n";
@@ -144,13 +144,14 @@ static void generate_rxn_rate_conversion_factors(
     out_parameters << IND << PARAM_RATE_CONV_THICKNESS << " " << PARAM_THICKNESS << "\n";
   }
 
+
   out_parameters << "\n" << BNG::IND << "# parameters to convert rates in MCell and BioNetGen\n";
 
   out_parameters << IND << PARAM_MCELL2BNG_VOL_CONV << " " << NA_VALUE_STR << " * " << PARAM_RATE_CONV_VOLUME << "\n";
   out_parameters << IND << PARAM_VOL_RXN << " 1\n";
-  out_parameters << IND << MCELL_REDEFINE_PREFIX << PARAM_VOL_RXN << " " << PARAM_MCELL2BNG_VOL_CONV << "\n";
+  out_parameters << IND << MCELL_REDEFINE_PREFIX << PARAM_VOL_RXN << " " << PARAM_MCELL2BNG_VOL_CONV << "\n\n";
 
-  out_parameters << IND << PARAM_MCELL2BNG_SURF_CONV << " " << PARAM_RATE_CONV_THICKNESS << "\n";
+  out_parameters << IND << PARAM_MCELL2BNG_SURF_CONV << " 1/" << PARAM_RATE_CONV_THICKNESS << "\n";
   out_parameters << IND << PARAM_SURF_RXN << " 1\n";
   out_parameters << IND << MCELL_REDEFINE_PREFIX << PARAM_SURF_RXN << " " << PARAM_MCELL2BNG_SURF_CONV << "\n\n";
 }
@@ -188,12 +189,12 @@ std::string BNGEngine::export_reaction_rules_as_bngl(
       if (rr->is_vol_rxn() || rr->is_bimol_vol_surf_rxn()) {
         // vol-vol and vol-surf rxns in nfsim use volume of the compartment for conversion,
         // ODE and other methods need just conversion from 1/M*1/s -> um^3*1/s
-        out_parameters << " / " << PARAM_MCELL2BNG_VOL_CONV << " * " << PARAM_VOL_RXN;
+        out_parameters << " * (" << PARAM_VOL_RXN << " / " << PARAM_MCELL2BNG_VOL_CONV << ")";
       }
       else if (rr->is_bimol_surf_surf_rxn()) {
         // NFSim uses volume (area * 10nm)
         // ODE and other methods need just conversion from um^2*1/s -> um^3*1/s (with membrane thickness 10nm)
-        out_parameters << " / " << PARAM_MCELL2BNG_SURF_CONV << " * " << PARAM_SURF_RXN;
+        out_parameters << " * (" << PARAM_SURF_RXN << " / " << PARAM_MCELL2BNG_SURF_CONV << ")";
       }
       else {
         err_msg += "Internal error, unexpected reaction type for " + rxn_as_bngl + ".\n";
