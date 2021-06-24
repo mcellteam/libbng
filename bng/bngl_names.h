@@ -54,12 +54,15 @@ const char* const MCELL_DIFFUSION_CONSTANT_3D_PREFIX = "MCELL_DIFFUSION_CONSTANT
 const char* const MCELL_DIFFUSION_CONSTANT_2D_PREFIX = "MCELL_DIFFUSION_CONSTANT_2D_";
 const char* const MCELL_REDEFINE_PREFIX = "MCELL_REDEFINE_";
 
-const char* const PARAM_VOL_RXN = "VOL_RXN";
 const char* const NA_VALUE_STR = "6.02214e23";
+const char* const PARAM_VOL_RXN = "VOL_RXN";
 const char* const PARAM_MCELL2BNG_VOL_CONV = "MCELL2BNG_VOL_CONV";
+const char* const PARAM_SURF_RXN = "SURF_RXN";
+const char* const PARAM_MCELL2BNG_SURF_CONV = "MCELL2BNG_SURF_CONV";
 const char* const PREFIX_VOLUME = "VOLUME_";
 const char* const PREFIX_AREA = "AREA_";
 const char* const PARAM_RATE_CONV_VOLUME = "RATE_CONV_VOLUME";
+const char* const PARAM_RATE_CONV_THICKNESS = "RATE_CONV_THICKNESS";
 const char* const PARAM_THICKNESS = "THICKNESS";
 const char* const THICKNESS_VALUE_STR = "0.01 # um";
 

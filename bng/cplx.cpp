@@ -646,14 +646,14 @@ void Cplx::remove_compartment_from_elem_mols(BNG::compartment_id_t cid) {
 }
 
 
-std::string Cplx::to_str(bool in_surf_reaction) const {
+std::string Cplx::to_str(bool in_surf_reaction, const bool with_orientation) const {
   std::string res;
-  to_str(res, in_surf_reaction);
+  to_str(res, in_surf_reaction, with_orientation);
   return res;
 }
 
 
-void Cplx::to_str(std::string& res, const bool in_surf_reaction) const {
+void Cplx::to_str(std::string& res, const bool in_surf_reaction, const bool with_orientation) const {
 
   uint_set<compartment_id_t> used_compartments;
   get_used_compartments(used_compartments);
@@ -668,14 +668,16 @@ void Cplx::to_str(std::string& res, const bool in_surf_reaction) const {
   }
 
   if (used_compartments.size() == 1 && *used_compartments.begin() == COMPARTMENT_ID_NONE) {
-    if (orientation == ORIENTATION_UP) {
-      res += "'";
-    }
-    else if (orientation == ORIENTATION_DOWN) {
-      res += ",";
-    }
-    else if (in_surf_reaction && orientation == ORIENTATION_NONE) {
-      res += ";";
+    if (with_orientation) {
+      if (orientation == ORIENTATION_UP) {
+        res += "'";
+      }
+      else if (orientation == ORIENTATION_DOWN) {
+        res += ",";
+      }
+      else if (in_surf_reaction && orientation == ORIENTATION_NONE) {
+        res += ";";
+      }
     }
   }
   else if (!use_individual_compartments) {

@@ -332,6 +332,34 @@ public:
     }
   }
 
+  bool is_bimol_vol_surf_rxn() const {
+    if (is_unimol()) {
+      return false;
+    }
+    else if (is_bimol()) {
+      return
+          (reactants[0].is_vol() && reactants[1].is_surf()) ||
+          (reactants[0].is_surf() && reactants[1].is_vol());
+    }
+    else {
+      assert(false);
+      return false;
+    }
+  }
+
+  bool is_bimol_surf_surf_rxn() const {
+    if (is_unimol()) {
+      return false;
+    }
+    else if (is_bimol()) {
+      return reactants[0].is_surf() && reactants[1].is_surf();
+    }
+    else {
+      assert(false);
+      return false;
+    }
+  }
+
   bool is_vol_rxn() const {
     if (is_unimol()) {
       return reactants[0].is_vol();

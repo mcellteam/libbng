@@ -231,9 +231,9 @@ public:
   void canonicalize(const bool sort_components_by_name_do_not_finalize = false);
 
   // appends to string res
-  void to_str(std::string& res, const bool in_surf_reaction = false) const;
+  void to_str(std::string& res, const bool in_surf_reaction = false, const bool with_orientation = true) const;
 
-  std::string to_str(const bool in_surf_reaction = false) const;
+  std::string to_str(const bool in_surf_reaction = false, const bool with_orientation = true) const;
   void dump(const bool for_diff = false, const std::string ind = "") const;
 
 private:

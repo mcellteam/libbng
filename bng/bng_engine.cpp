@@ -80,16 +80,12 @@ std::string BNGEngine::export_to_bngl(
     const double volume_um3_for_nfsim,
     const double area_um3_for_nfsim) const {
 
-  if (rates_for_nfsim) {
-    out_parameters << IND << PARAM_RATE_CONV_VOLUME << " " << f_to_str(volume_um3_for_nfsim) << " * 1e-15 # compartment volume in litres\n";
-  }
-  else {
-    out_parameters << IND << PARAM_RATE_CONV_VOLUME << " 1e-15 # um^3 to litres\n";
-  }
+  string err_msg;
 
   export_molecule_types_as_bngl(out_parameters, out_molecule_types);
 
-  string err_msg = export_reaction_rules_as_bngl(out_parameters, out_reaction_rules);
+  err_msg += export_reaction_rules_as_bngl(
+      out_parameters, out_reaction_rules, rates_for_nfsim, volume_um3_for_nfsim, area_um3_for_nfsim);
 
   err_msg += export_compartments_as_bngl(out_parameters, out_compartments);
 
@@ -123,15 +119,57 @@ void BNGEngine::export_molecule_types_as_bngl(std::ostream& out_parameters, std:
 }
 
 
-std::string BNGEngine::export_reaction_rules_as_bngl(
+static void generate_rxn_rate_conversion_factors(
     std::ostream& out_parameters,
-    std::ostream& out_reaction_rules) const {
-  out_reaction_rules << BEGIN_REACTION_RULES << "\n";
+    const bool rates_for_nfsim,
+    const double volume_um3_for_nfsim,
+    const double area_um3_for_nfsim) {
 
-  out_parameters << "\n" << BNG::IND << "# parameters to control rates in MCell and BioNetGen\n";
+  out_parameters << "\n";
+  out_parameters << IND << PARAM_THICKNESS << " 0.01 # um, assumed membrane thickness\n";
+  if (rates_for_nfsim) {
+    out_parameters << IND << "# volume rxn rate conversion factor for NFSim\n";
+    out_parameters << IND << PARAM_RATE_CONV_VOLUME << " " <<
+        f_to_str(volume_um3_for_nfsim) << " * 1e-15\n";
+    out_parameters << "\n";
+    out_parameters << IND << "# surface-surface rxn rate conversion factor for NFSim, in um\n";
+    out_parameters << IND << PARAM_RATE_CONV_THICKNESS << " " <<
+        f_to_str(area_um3_for_nfsim) << " * " << PARAM_THICKNESS << " * 1e-15\n";
+  }
+  else {
+    out_parameters << IND << "# volume rxn rate conversion factor for um^3 to litres\n";
+    out_parameters << IND << PARAM_RATE_CONV_VOLUME << " 1e-15\n";
+    out_parameters << "\n";
+    out_parameters << IND << "# surface-surface rxn rate conversion factor for um^2 to um^3 using membrane thickness, in um\n";
+    out_parameters << IND << PARAM_RATE_CONV_THICKNESS << " " << PARAM_THICKNESS << "\n";
+  }
+
+  out_parameters << "\n" << BNG::IND << "# parameters to convert rates in MCell and BioNetGen\n";
+
   out_parameters << IND << PARAM_MCELL2BNG_VOL_CONV << " " << NA_VALUE_STR << " * " << PARAM_RATE_CONV_VOLUME << "\n";
   out_parameters << IND << PARAM_VOL_RXN << " 1\n";
   out_parameters << IND << MCELL_REDEFINE_PREFIX << PARAM_VOL_RXN << " " << PARAM_MCELL2BNG_VOL_CONV << "\n";
+
+  out_parameters << IND << PARAM_MCELL2BNG_SURF_CONV << " " << PARAM_RATE_CONV_THICKNESS << "\n";
+  out_parameters << IND << PARAM_SURF_RXN << " 1\n";
+  out_parameters << IND << MCELL_REDEFINE_PREFIX << PARAM_SURF_RXN << " " << PARAM_MCELL2BNG_SURF_CONV << "\n\n";
+}
+
+
+std::string BNGEngine::export_reaction_rules_as_bngl(
+    std::ostream& out_parameters,
+    std::ostream& out_reaction_rules,
+    const bool rates_for_nfsim,
+    const double volume_um3_for_nfsim,
+    const double area_um3_for_nfsim) const {
+
+  std::string err_msg;
+
+  generate_rxn_rate_conversion_factors(
+      out_parameters, rates_for_nfsim, volume_um3_for_nfsim, area_um3_for_nfsim);
+
+  out_reaction_rules << BEGIN_REACTION_RULES << "\n";
+
   out_parameters << "\n" << BNG::IND << "# reaction rates\n";
 
   for (size_t i = 0; i < get_all_rxns().get_rxn_rules_vector().size(); i++) {
@@ -141,12 +179,33 @@ std::string BNGEngine::export_reaction_rules_as_bngl(
 
     string rate_param = "k" + to_string(i);
     out_parameters << IND << rate_param << " " << f_to_str(rr->base_rate_constant);
-    if (rr->is_bimol_vol_rxn()) {
-      out_parameters  << " / " << PARAM_MCELL2BNG_VOL_CONV << " * " << PARAM_VOL_RXN;
+
+    if (rr->is_reactive_surface_rxn()) {
+      err_msg += "Cannot express surface class reaction in BNGL, error for " + rxn_as_bngl + ".\n";
+      continue;
     }
-    else if (rr->is_surf_rxn() || rr->is_reactive_surface_rxn()) {
-      // TODO: only error msg and continue
-      return "Export of surface reactions to BNGL is not supported yet, error for " + rxn_as_bngl + ".";
+    else if (rr->is_bimol()) {
+      if (rr->is_vol_rxn() || rr->is_bimol_vol_surf_rxn()) {
+        // vol-vol and vol-surf rxns in nfsim use volume of the compartment for conversion,
+        // ODE and other methods need just conversion from 1/M*1/s -> um^3*1/s
+        out_parameters << " / " << PARAM_MCELL2BNG_VOL_CONV << " * " << PARAM_VOL_RXN;
+      }
+      else if (rr->is_bimol_surf_surf_rxn()) {
+        // NFSim uses volume (area * 10nm)
+        // ODE and other methods need just conversion from um^2*1/s -> um^3*1/s (with membrane thickness 10nm)
+        out_parameters << " / " << PARAM_MCELL2BNG_SURF_CONV << " * " << PARAM_SURF_RXN;
+      }
+      else {
+        err_msg += "Internal error, unexpected reaction type for " + rxn_as_bngl + ".\n";
+        continue;
+      }
+    }
+    else if (rr->is_unimol()) {
+      // ok, no need to do unit conversion, both tools use 1/s
+    }
+    else {
+      err_msg += "Internal error, unexpected reaction type for " + rxn_as_bngl + ".\n";
+      continue;
     }
     out_parameters << "\n";
 
@@ -160,13 +219,49 @@ std::string BNGEngine::export_reaction_rules_as_bngl(
 }
 
 
+static void collect_compartment_children_recursively(
+    const BNGData& data,
+    const compartment_id_t id,
+    set<compartment_id_t>& used_compartment_ids,
+    vector<compartment_id_t>& sorted_compartment_ids
+) {
+  if (used_compartment_ids.count(id) != 0) {
+    return;
+  }
+  used_compartment_ids.insert(id);
+  sorted_compartment_ids.push_back(id);
+
+  const Compartment& comp = data.get_compartment(id);
+  for (compartment_id_t child_id: comp.children_compartments) {
+    collect_compartment_children_recursively(
+        data, child_id, used_compartment_ids, sorted_compartment_ids);
+  }
+}
+
+
 std::string BNGEngine::export_compartments_as_bngl(
     std::ostream& out_parameters,
     std::ostream& out_compartments) const {
 
   out_compartments << BEGIN_COMPARTMENTS << "\n";
 
+  // sort by dependencies
+  set<compartment_id_t> used_compartment_ids;
+  vector<compartment_id_t> sorted_compartment_ids;
+  // for each compartment without dependencies
   for (const Compartment& comp: data.get_compartments()) {
+    if (comp.parent_compartment_id == COMPARTMENT_ID_INVALID) {
+      collect_compartment_children_recursively(
+          data, comp.id, used_compartment_ids, sorted_compartment_ids
+      );
+    }
+  }
+  assert(sorted_compartment_ids.size() == used_compartment_ids.size());
+  assert(sorted_compartment_ids.size() == data.get_compartments().size());
+
+  // BNG requires
+  for (compartment_id_t comp_id: sorted_compartment_ids) {
+    const Compartment& comp = data.get_compartment(comp_id);
     if (comp.name == DEFAULT_COMPARTMENT_NAME) {
       // ignored
       continue;
@@ -174,18 +269,12 @@ std::string BNGEngine::export_compartments_as_bngl(
 
     if (comp.is_3d) {
       string vol_name = PREFIX_VOLUME + comp.name;
-
-      out_parameters << IND << vol_name << " " <<
-          f_to_str(comp.get_volume_or_area()) << " # um^3\n";
-
+      out_parameters << IND << vol_name << " " << f_to_str(comp.get_volume_or_area()) << " # um^3\n";
       out_compartments << IND << comp.name << " 3 " << vol_name;
     }
     else {
       string area_name = PREFIX_AREA + comp.name;
-
-      out_parameters << IND << area_name << " " <<
-          f_to_str(comp.get_volume_or_area()) << " # um^2\n";
-
+      out_parameters << IND << area_name << " " << f_to_str(comp.get_volume_or_area()) << " # um^2\n";
       out_compartments << IND << comp.name << " 2 " << area_name << " * " << PARAM_THICKNESS;
     }
 

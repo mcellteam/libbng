@@ -130,7 +130,11 @@ private:
       std::ostream& out_parameters, std::ostream& out_molecule_types) const;
   // if error occurred, returns nonempty string with error message
   std::string export_reaction_rules_as_bngl(
-      std::ostream& out_parameters, std::ostream& out_reaction_rules) const;
+      std::ostream& out_parameters,
+      std::ostream& out_reaction_rules,
+      const bool rates_for_nfsim,
+      const double volume_um3_for_nfsim,
+      const double area_um3_for_nfsim) const;
 
   std::string export_compartments_as_bngl(
       std::ostream& out_parameters,
