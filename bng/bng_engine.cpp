@@ -244,7 +244,7 @@ std::string BNGEngine::export_compartments_as_bngl(
     }
     else {
       string area_name = PREFIX_AREA + comp.name;
-      out_parameters << IND << area_name << " " << f_to_str(comp.get_volume()) << " # um^2\n";
+      out_parameters << IND << area_name << " " << f_to_str(comp.get_area()) << " # um^2\n";
       out_compartments << IND << comp.name << " 2 " << area_name << " * " << PARAM_THICKNESS;
     }
 

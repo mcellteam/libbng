@@ -82,15 +82,9 @@ public:
     return volume_or_area != FLT_INVALID;
   }
 
-  // can be called for both 2D and 3D compartments
   double get_volume() const {
-    assert(is_volume_or_area_set());
-    if (is_3d) {
-      return volume_or_area;
-    }
-    else {
-      return volume_or_area * SURFACE_COMPARTMENT_THICKNESS;
-    }
+    assert(is_3d);
+    return volume_or_area;
   }
 
   double get_area() const {
@@ -98,14 +92,9 @@ public:
     return volume_or_area;
   }
 
-  // can be called for both 2D and 3D compartments
   void set_volume(const double volume) {
-    if (is_3d) {
-      volume_or_area = volume;
-    }
-    else {
-      volume_or_area = volume / SURFACE_COMPARTMENT_THICKNESS;
-    }
+    assert(is_3d);
+    volume_or_area = volume;
   }
 
   void set_area(const double area) {

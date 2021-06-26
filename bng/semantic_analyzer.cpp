@@ -431,7 +431,12 @@ void SemanticAnalyzer::convert_and_store_compartments() {
       ctx->inc_error_count();
       continue;
     }
-    c.set_volume(volume);
+    if (c.is_3d) {
+      c.set_volume(volume);
+    }
+    else {
+      c.set_area(volume / SURFACE_COMPARTMENT_THICKNESS);
+    }
 
     bng_data->add_compartment(c);
   }

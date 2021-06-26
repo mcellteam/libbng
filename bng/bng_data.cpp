@@ -39,8 +39,13 @@ static double get_compartment_volume_recursively(
   }
 
   // and its own volume
-  if (count_surface_compartments || comp.is_3d) {
+  if (comp.is_3d) {
     res += comp.get_volume();
+  }
+  else {
+    if (count_surface_compartments) {
+      res += comp.get_area() * SURFACE_COMPARTMENT_THICKNESS;
+    }
   }
 
   return res;
@@ -310,8 +315,15 @@ void BNGData::dump_compartments() const {
   cout <<  BEGIN_COMPARTMENTS << "\n";
 
   for (const Compartment& c: compartments) {
-    cout << IND << c.name << " " << (c.is_3d ? 3 : 2) << " " <<
-        (c.is_volume_or_area_set() ? c.get_volume() : FLT_INVALID);
+    cout << IND << c.name << " ";
+    if (c.is_3d) {
+      cout << 3 << " " << (c.is_volume_or_area_set() ? c.get_volume() : FLT_INVALID);
+    }
+    else {
+      cout << 2 << " " << (c.is_volume_or_area_set() ? c.get_area() : FLT_INVALID)
+          << " * " << SURFACE_COMPARTMENT_THICKNESS;
+    }
+
     if (c.parent_compartment_id != COMPARTMENT_ID_INVALID) {
       cout << " " << get_compartment(c.parent_compartment_id).name;
     }
