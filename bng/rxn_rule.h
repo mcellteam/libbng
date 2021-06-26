@@ -515,7 +515,7 @@ public:
   bool update_rxn_rate(const double new_rate);
 
   std::string to_str(
-      const bool with_rate_constant = true, const bool with_name = true, const bool with_id = true) const;
+      const bool with_rate_constant = true, const bool with_name = true, const bool with_id = true, const bool with_orientation = false) const;
   std::string reactants_to_str() const;
   std::string products_to_str() const;
   void dump(const bool for_diff = false, const std::string ind = "") const;
@@ -568,7 +568,7 @@ private:
   bool may_modify_more_than_one_identical_component() const;
   bool matching_may_produce_multiple_identical_results() const;
 
-  std::string cplx_vector_to_str(const CplxVector& complexes) const;
+  std::string cplx_vector_to_str(const CplxVector& complexes, const bool with_orientation = true) const;
   void dump_cplx_vector(
       const CplxVector& complexes,
       const std::string ind) const;

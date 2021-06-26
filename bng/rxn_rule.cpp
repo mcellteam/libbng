@@ -2261,16 +2261,17 @@ bool RxnRule::update_rxn_rate(const double new_rate) {
 }
 
 
-std::string RxnRule::to_str(const bool with_rate_constant, const bool with_name, const bool with_id) const {
+std::string RxnRule::to_str(
+    const bool with_rate_constant, const bool with_name, const bool with_id, const bool with_orientation) const {
   stringstream ss;
   if (with_name && name != "") {
     ss << name << ": ";
   }
 
-  ss << cplx_vector_to_str(reactants);
+  ss << cplx_vector_to_str(reactants, with_orientation);
   ss << " -> ";
   if (!products.empty()) {
-    ss << cplx_vector_to_str(products);
+    ss << cplx_vector_to_str(products, with_orientation);
   }
   else {
     ss << COMPLEX_ZERO;
@@ -2290,10 +2291,10 @@ std::string RxnRule::to_str(const bool with_rate_constant, const bool with_name,
 }
 
 
-std::string RxnRule::cplx_vector_to_str(const CplxVector& complexes) const {
+std::string RxnRule::cplx_vector_to_str(const CplxVector& complexes, const bool with_orientation) const {
   stringstream ss;
   for (size_t i = 0; i < complexes.size(); i++) {
-    ss << complexes[i].to_str(!is_vol_rxn());
+    ss << complexes[i].to_str(!is_vol_rxn(), with_orientation);
 
     if (i != complexes.size() - 1) {
       ss << " + ";
