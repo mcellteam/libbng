@@ -24,6 +24,36 @@ using namespace std;
 
 namespace BNG {
 
+
+static double get_compartment_volume_recursively(
+    const BNGData& bng_data,
+    const compartment_id_t id,
+    const bool count_surface_compartments) {
+
+  double res = 0;
+
+  // count children
+  const Compartment& comp = bng_data.get_compartment(id);
+  for (compartment_id_t child_id: comp.children_compartments) {
+    res += get_compartment_volume_recursively(bng_data, child_id, count_surface_compartments);
+  }
+
+  // and its own volume
+  if (count_surface_compartments || comp.is_3d) {
+    res += comp.get_volume();
+  }
+
+  return res;
+}
+
+
+double Compartment::get_volume_including_children(
+    const BNGData& bng_data, const bool count_surface_compartments) const {
+
+  return get_compartment_volume_recursively(bng_data, id, count_surface_compartments);
+}
+
+
 void BNGData::clear() {
   state_names.clear();
   component_types.clear();
@@ -183,6 +213,46 @@ const Compartment* BNGData::find_compartment(const std::string& name) const {
 }
 
 
+static void collect_compartment_children_recursively(
+    const BNGData& data,
+    const compartment_id_t id,
+    set<compartment_id_t>& used_compartment_ids,
+    vector<compartment_id_t>& sorted_compartment_ids
+) {
+  if (used_compartment_ids.count(id) != 0) {
+    return;
+  }
+  used_compartment_ids.insert(id);
+  sorted_compartment_ids.push_back(id);
+
+  const Compartment& comp = data.get_compartment(id);
+  for (compartment_id_t child_id: comp.children_compartments) {
+    collect_compartment_children_recursively(
+        data, child_id, used_compartment_ids, sorted_compartment_ids);
+  }
+}
+
+
+void BNGData::get_compartments_sorted_by_parents_first(
+    std::vector<compartment_id_t>& sorted_compartment_ids) const {
+
+  sorted_compartment_ids.clear();
+
+  // sort by dependencies
+  set<compartment_id_t> used_compartment_ids;
+  // for each compartment without dependencies
+  for (const Compartment& comp: get_compartments()) {
+    if (comp.parent_compartment_id == COMPARTMENT_ID_INVALID) {
+      collect_compartment_children_recursively(
+          *this, comp.id, used_compartment_ids, sorted_compartment_ids
+      );
+    }
+  }
+  assert(sorted_compartment_ids.size() == used_compartment_ids.size());
+  assert(sorted_compartment_ids.size() == get_compartments().size());
+}
+
+
 rxn_rule_id_t BNGData::find_or_add_rxn_rule(const RxnRule& rr) {
   // TODO LATER: check that if there is a reaction with the same
   //       reactants and products that the reaction rate is the same
@@ -241,7 +311,7 @@ void BNGData::dump_compartments() const {
 
   for (const Compartment& c: compartments) {
     cout << IND << c.name << " " << (c.is_3d ? 3 : 2) << " " <<
-        (c.is_volume_or_area_set() ? c.get_volume_or_area() : FLT_INVALID);
+        (c.is_volume_or_area_set() ? c.get_volume() : FLT_INVALID);
     if (c.parent_compartment_id != COMPARTMENT_ID_INVALID) {
       cout << " " << get_compartment(c.parent_compartment_id).name;
     }

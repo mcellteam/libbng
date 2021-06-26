@@ -24,6 +24,7 @@
 
 namespace BNG {
 
+class BNGData;
 
 class SeedSpecies {
 public:
@@ -68,7 +69,10 @@ public:
   bool is_3d; // 2d if this member is false
 
 private:
-  double volume_or_area; // in um^3/um^2, if is_3d is true then this is volume, area otherwise
+  // - if is_3d is true then this is volume in um^3
+  // - if is_3d is false then this is area in um^2 and volume can be obtained by multiplying it
+  //     with SURFACE_COMPARTMENT_THICKNESS
+  double volume_or_area;
 
 public:
   compartment_id_t parent_compartment_id; // COMPARTMENT_ID_INVALID if the compartment has no parents
@@ -78,14 +82,35 @@ public:
     return volume_or_area != FLT_INVALID;
   }
 
-  //
-  double get_volume_or_area() const {
+  // can be called for both 2D and 3D compartments
+  double get_volume() const {
     assert(is_volume_or_area_set());
+    if (is_3d) {
+      return volume_or_area;
+    }
+    else {
+      return volume_or_area * SURFACE_COMPARTMENT_THICKNESS;
+    }
+  }
+
+  double get_area() const {
+    assert(!is_3d);
     return volume_or_area;
   }
 
-  void set_volume_or_area(const double volume_or_area_) {
-    volume_or_area = volume_or_area_;
+  // can be called for both 2D and 3D compartments
+  void set_volume(const double volume) {
+    if (is_3d) {
+      volume_or_area = volume;
+    }
+    else {
+      volume_or_area = volume / SURFACE_COMPARTMENT_THICKNESS;
+    }
+  }
+
+  void set_area(const double area) {
+    assert(!is_3d);
+    volume_or_area = area;
   }
 
   bool has_parent() const {
@@ -95,6 +120,10 @@ public:
   bool has_children() const {
     return !children_compartments.empty();
   }
+
+  // asserts when volume or area was not set
+  double get_volume_including_children(
+      const BNGData& bng_data, const bool count_surface_compartments = true) const;
 };
 
 
@@ -218,6 +247,12 @@ public:
   const std::vector<Compartment>& get_compartments() const {
     return compartments;
   }
+
+  // returns compartment ids in such an order where all parents appear first
+  // example: EC, PM1, CP1, PM2, CP2  (PM's parent is EC and CP1's parent is PM1)
+  void get_compartments_sorted_by_parents_first(
+      std::vector<compartment_id_t>& sorted_compartment_ids) const;
+
   // -------- reaction rules --------
 
   rxn_rule_id_t find_or_add_rxn_rule(const RxnRule& rr);

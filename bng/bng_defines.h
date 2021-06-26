@@ -46,6 +46,11 @@ using BNGCommon::pow_f;
 using BNGCommon::floor_f;
 using BNGCommon::round_f;
 
+// BNG uses volume for surface compartments, that however does not
+// make sense in the MCell context so compartments have area and
+// then a conversion to volume is needed, this constant is used
+const double SURFACE_COMPARTMENT_THICKNESS = 0.01;
+
 // arbitrary limit that is checked when we are computing all the product sets for
 // a given reaction rule, only to show to the user that something is probably wrong
 // (and we cannot deal with huge numbers yet, although the 1024 is still ok)

@@ -220,47 +220,16 @@ std::string BNGEngine::export_reaction_rules_as_bngl(
 }
 
 
-static void collect_compartment_children_recursively(
-    const BNGData& data,
-    const compartment_id_t id,
-    set<compartment_id_t>& used_compartment_ids,
-    vector<compartment_id_t>& sorted_compartment_ids
-) {
-  if (used_compartment_ids.count(id) != 0) {
-    return;
-  }
-  used_compartment_ids.insert(id);
-  sorted_compartment_ids.push_back(id);
-
-  const Compartment& comp = data.get_compartment(id);
-  for (compartment_id_t child_id: comp.children_compartments) {
-    collect_compartment_children_recursively(
-        data, child_id, used_compartment_ids, sorted_compartment_ids);
-  }
-}
-
-
 std::string BNGEngine::export_compartments_as_bngl(
     std::ostream& out_parameters,
     std::ostream& out_compartments) const {
 
   out_compartments << BEGIN_COMPARTMENTS << "\n";
 
-  // sort by dependencies
-  set<compartment_id_t> used_compartment_ids;
-  vector<compartment_id_t> sorted_compartment_ids;
-  // for each compartment without dependencies
-  for (const Compartment& comp: data.get_compartments()) {
-    if (comp.parent_compartment_id == COMPARTMENT_ID_INVALID) {
-      collect_compartment_children_recursively(
-          data, comp.id, used_compartment_ids, sorted_compartment_ids
-      );
-    }
-  }
-  assert(sorted_compartment_ids.size() == used_compartment_ids.size());
-  assert(sorted_compartment_ids.size() == data.get_compartments().size());
+  std::vector<compartment_id_t> sorted_compartment_ids;
+  data.get_compartments_sorted_by_parents_first(sorted_compartment_ids);
 
-  // BNG requires
+  // BNG requires parents to be defined first
   for (compartment_id_t comp_id: sorted_compartment_ids) {
     const Compartment& comp = data.get_compartment(comp_id);
     if (comp.name == DEFAULT_COMPARTMENT_NAME) {
@@ -270,12 +239,12 @@ std::string BNGEngine::export_compartments_as_bngl(
 
     if (comp.is_3d) {
       string vol_name = PREFIX_VOLUME + comp.name;
-      out_parameters << IND << vol_name << " " << f_to_str(comp.get_volume_or_area()) << " # um^3\n";
+      out_parameters << IND << vol_name << " " << f_to_str(comp.get_volume()) << " # um^3\n";
       out_compartments << IND << comp.name << " 3 " << vol_name;
     }
     else {
       string area_name = PREFIX_AREA + comp.name;
-      out_parameters << IND << area_name << " " << f_to_str(comp.get_volume_or_area()) << " # um^2\n";
+      out_parameters << IND << area_name << " " << f_to_str(comp.get_volume()) << " # um^2\n";
       out_compartments << IND << comp.name << " 2 " << area_name << " * " << PARAM_THICKNESS;
     }
 

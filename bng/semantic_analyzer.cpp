@@ -431,7 +431,7 @@ void SemanticAnalyzer::convert_and_store_compartments() {
       ctx->inc_error_count();
       continue;
     }
-    c.set_volume_or_area(volume);
+    c.set_volume(volume);
 
     bng_data->add_compartment(c);
   }
