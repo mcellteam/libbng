@@ -98,7 +98,7 @@ def run_tests(build_dir, work_dir, extra_args):
     
     if not os.path.exists(test_app):
         # try Windows build location
-        test_app = os.path.join(build_dir, '..', '..', 'bin', DEFAULT_TEST_APP + utils.EXE_EXT)
+        test_app = os.path.join(build_dir, BNG_DIR, 'Release', DEFAULT_TEST_APP + utils.EXE_EXT)
         
         if not os.path.exists(test_app):
             sys.exit("Fatal error: parser test application '" + test_app + "' was not found.")
