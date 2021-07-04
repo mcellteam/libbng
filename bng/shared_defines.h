@@ -89,7 +89,8 @@ const double SQRT_EPS = 1e-6;
 const double DBL_GIGANTIC = 1e140;
 
 const double BNG_PI = 3.14159265358979323846;
-const double BNG_N_AV = 6.0221417930e23;
+const double BNG_N_AV = 6.0221417930e23; // Avogadro's constant, NA
+const double DEFAULT_MEMBRANE_THICKNESS_UM = 0.01; // membrane thickness used in rate unit conversion
 
 #if POS_T_BYTES == 8
 

@@ -89,6 +89,7 @@ public:
   BNGConfig() :
     mcell(BNG_MCELL),
     initial_seed(1),
+    use_bng_units(false),
     time_unit(0),
     length_unit(0),
     rcp_length_unit(0),
@@ -96,7 +97,7 @@ public:
     rx_radius_3d(0),
     intermembrane_rx_radius_3d(0),
     rxn_and_species_report(true),
-	debug_requires_diffusion_constants(false)
+	  debug_requires_diffusion_constants(false)
     {
   }
 
@@ -104,6 +105,19 @@ public:
   bool mcell;
 
   uint initial_seed;
+
+  /*
+  When use_bng_units is False (default), traditional MCell units are used:
+    * [M^-1*s^-1] for bimolecular reactions between either two volume molecules, a volume molecule
+                  and a surface (molecule),
+    * [um^2*N^-1*s^-1] bimolecular reactions between two surface molecules on the same surface, and
+  When use_bng_units is True, units compatible with BioNetGen's ODE, SSA, and PLA solvers are used:
+    * [um^3*N^-1*s^-1] for any bimolecular reactions, surface-surface reaction rate conversion assumes 10nm membrane thickness.
+
+  This setting only impacts the computation of reaction probability where, if use_bng_units is true,
+  BNG units are first converted to MCell units and then the probability factor is computed.
+  */
+  bool use_bng_units;
 
   // MCell
   double time_unit;

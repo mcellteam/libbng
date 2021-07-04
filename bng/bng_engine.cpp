@@ -118,8 +118,6 @@ static void generate_rxn_rate_conversion_factors(
     const double volume_um3_for_nfsim,
     const double area_um3_for_nfsim) {
 
-  out_parameters << "\n";
-  out_parameters << IND << PARAM_THICKNESS << " 0.01 # um, assumed membrane thickness\n";
   if (rates_for_nfsim) {
     out_parameters << IND << "# volume rxn rate conversion factor for NFSim\n";
     out_parameters << IND << PARAM_RATE_CONV_VOLUME << " " <<
@@ -159,8 +157,13 @@ std::string BNGEngine::export_reaction_rules_as_bngl(
 
   std::string err_msg;
 
-  generate_rxn_rate_conversion_factors(
-      out_parameters, rates_for_nfsim, volume_um3_for_nfsim, area_um3_for_nfsim);
+  out_parameters << "\n";
+  out_parameters << IND << PARAM_THICKNESS << " 0.01 # um, assumed membrane thickness\n";
+
+  if (!bng_config.use_bng_units) {
+    generate_rxn_rate_conversion_factors(
+        out_parameters, rates_for_nfsim, volume_um3_for_nfsim, area_um3_for_nfsim);
+  }
 
   out_reaction_rules << BEGIN_REACTION_RULES << "\n";
 
@@ -178,8 +181,8 @@ std::string BNGEngine::export_reaction_rules_as_bngl(
       err_msg += "Cannot express surface class reaction in BNGL, error for " + rxn_as_bngl + ".\n";
       continue;
     }
-    else if (rr->is_bimol()) {
-      if (rr->is_vol_rxn() || rr->is_bimol_vol_surf_rxn()) {
+    else if (!bng_config.use_bng_units && rr->is_bimol()) {
+      if (rr->is_bimol_vol_vol_rxn() || rr->is_bimol_vol_surf_rxn()) {
         // vol-vol and vol-surf rxns in nfsim use volume of the compartment for conversion,
         // ODE and other methods need just conversion from 1/M*1/s -> um^3*1/s
         out_parameters << " * (" << PARAM_VOL_RXN << " / " << PARAM_MCELL2BNG_VOL_CONV << ")";
@@ -194,8 +197,8 @@ std::string BNGEngine::export_reaction_rules_as_bngl(
         continue;
       }
     }
-    else if (rr->is_unimol()) {
-      // ok, no need to do unit conversion, both tools use 1/s
+    else if (bng_config.use_bng_units || rr->is_unimol()) {
+      // ok, no need to do unit conversion, both tools use the same units
     }
     else {
       err_msg += "Internal error, unexpected reaction type for " + rxn_as_bngl + ".\n";
@@ -209,7 +212,7 @@ std::string BNGEngine::export_reaction_rules_as_bngl(
   }
 
   out_reaction_rules << END_REACTION_RULES << "\n";
-  return "";
+  return err_msg;
 }
 
 

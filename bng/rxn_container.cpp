@@ -268,7 +268,7 @@ reactant_class_id_t RxnContainer::compute_reactant_class_for_species(const speci
   ReactionIdBitsets reactions_bitset_per_reactant =
     { boost::dynamic_bitset<>(rxn_rules.size()), boost::dynamic_bitset<>(rxn_rules.size())};
   for (RxnRule* r: rxn_rules) {
-    if (r->is_bimol_vol_rxn()) {
+    if (r->is_bimol_vol_vol_rxn()) {
       std::vector<uint> indices;
       r->get_reactant_indices(species_id, all_species, indices);
       assert(indices.size() <= 2);
@@ -541,7 +541,7 @@ void RxnContainer::remove_reactant_class(const reactant_class_id_t id) {
 
 bool RxnContainer::has_bimol_vol_rxns() const {
   for (const BNG::RxnRule* r: rxn_rules) {
-    if (r->is_bimol_vol_rxn()) {
+    if (r->is_bimol_vol_vol_rxn()) {
       return true;
     }
   }

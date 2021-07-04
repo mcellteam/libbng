@@ -117,10 +117,10 @@ void RxnRule::define_rxn_pathways_for_specific_reactants(
     double prob;
     if (cmp_eq(get_rate_constant(), DBL_GIGANTIC)) {
       // special surface reactions are not scaled
-      prob = get_rate_constant();
+      prob = compute_rxn_probability(bng_config, 1);
     }
     else {
-      prob = get_rate_constant() * pb_factor;
+      prob = compute_rxn_probability(bng_config, pb_factor);
     }
     pathways.push_back(RxnClassPathway(id, prob, product_species));
   }
@@ -1500,7 +1500,7 @@ void RxnRule::create_products_for_complex_rxn(
 
       // the probability is divided by the number of mapping of pattern onto pattern
       // because so many more product sets we will get
-      double prob = get_rate_constant() * pb_factor;
+      double prob = compute_rxn_probability(bng_config, pb_factor);
 
       pathways.push_back(RxnClassPathway(id, prob, mapping));
     }
@@ -1625,7 +1625,7 @@ void RxnRule::create_products_for_complex_rxn(
 
     // the probability is divided by the number of mapping of pattern onto pattern
     // because so many more product sets we will get
-    double prob = get_rate_constant() * pb_factor;
+    double prob = compute_rxn_probability(bng_config, pb_factor);
 
     pathways.push_back(RxnClassPathway(id, prob, product_species));
   }
@@ -1693,6 +1693,37 @@ void RxnRule::define_rxn_pathway_using_mapping(
 
   pathway.rule_mapping_onto_reactants.clear();
   pathway.products_are_defined = true;
+}
+
+
+double RxnRule::compute_rxn_probability(const BNGConfig& bng_config, const double pb_factor) const {
+
+  double mcell_rate_constant;
+  if (!bng_config.use_bng_units || is_unimol()) {
+    // rate is in mcell units or unimol that has always unit 1/s
+    mcell_rate_constant = get_rate_constant();
+  }
+  else {
+    // BNG unit conversion
+    assert(is_bimol());
+    // volume or surface/reactive surface
+    bool r1_vol = reactants[0].is_vol();
+    bool r2_vol = reactants[1].is_vol();
+
+    if (r1_vol || r2_vol) {
+      // rxn uses volume rxn units in MCell
+      // [um^3*N^-1*s^-1] -> [M^-1*s^-1]
+      mcell_rate_constant = get_rate_constant() * (BNG_N_AV * 1e-15);
+    }
+    else {
+      // rxn uses surface rxn units in MCell - both reactants are
+      // surface molecule or reactive surface
+      // [um^3*N^-1*s^-1] -> [um^2*N^-1*s^-1]
+      mcell_rate_constant = get_rate_constant() / DEFAULT_MEMBRANE_THICKNESS_UM;
+    }
+  }
+
+  return mcell_rate_constant * pb_factor;
 }
 
 

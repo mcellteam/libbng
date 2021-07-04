@@ -58,7 +58,7 @@ double RxnClass::get_reactant_diffusion(const uint reactant_index) const {
 // this assert cannot be in the header file
 void RxnClass::debug_check_bimol_vol_rxn_flag() const {
   assert(!rxn_rule_ids.empty() &&
-      all_rxns.get(rxn_rule_ids[0])->is_bimol_vol_rxn() == bimol_vol_rxn_flag);
+      all_rxns.get(rxn_rule_ids[0])->is_bimol_vol_vol_rxn() == bimol_vol_rxn_flag);
 }
 
 
@@ -369,11 +369,11 @@ double RxnClass::compute_pb_factor() const {
 void RxnClass::add_rxn_rule_no_update(RxnRule* r) {
 
   if (rxn_rule_ids.empty()) {
-    bimol_vol_rxn_flag = r->is_bimol_vol_rxn();
+    bimol_vol_rxn_flag = r->is_bimol_vol_vol_rxn();
   }
   else {
     // this should not normally happen
-    assert(bimol_vol_rxn_flag == r->is_bimol_vol_rxn());
+    assert(bimol_vol_rxn_flag == r->is_bimol_vol_vol_rxn());
   }
 
   if (rxn_rule_ids.empty()) {

@@ -69,7 +69,7 @@ void Species::update_rxn_and_custom_flags(
 
     assert(rxn->is_bimol());
 
-    if (rxn->is_bimol_vol_rxn()) {
+    if (rxn->is_bimol_vol_vol_rxn()) {
       set_flag(SPECIES_FLAG_HAS_BIMOL_VOL_RXN);
     }
 

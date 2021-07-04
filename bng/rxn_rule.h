@@ -211,6 +211,7 @@ public:
   CplxVector products;
 
   // base rate constant for this reaction as obtained from the BNGL or other input
+  // unit depends on type of reaction and BNGConfig.use_bng_units setting
   double base_rate_constant;
 
   small_vector<RxnRateInfo> base_variable_rates;
@@ -263,6 +264,9 @@ public:
     return base_rate_constant;
   }
 
+  // converts rxn units in config.use_bng_units is set
+  double compute_rxn_probability(const BNGConfig& bng_config, const double pb_factor) const;
+
   const Cplx& get_cplx_reactant(const uint index) const {
     assert(index <= reactants.size());
     return reactants[index];
@@ -312,7 +316,7 @@ public:
     return is_bimol() && reactants[1].is_reactive_surface() && products.empty();
   }
 
-  bool is_bimol_vol_rxn() const {
+  bool is_bimol_vol_vol_rxn() const {
     if (is_unimol()) {
       return false;
     }
