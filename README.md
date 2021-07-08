@@ -1,4 +1,4 @@
-# bng
+# libBNG
 BioNetGen library
 
 Build:
