@@ -80,20 +80,27 @@ void BNGConfig::initialize_bng_report_files() {
 
 void BNGConfig::print_final_warnings() const {
   if (warnings.bimol_rxn_probability_over_1) {
-    cerr <<
+    // print both to output and to warnings file
+    stringstream ss;
+    ss <<
         "Warning: There was a bimolecular reaction with probability p > 1.0. This means that some reactions were missed. " <<
         "See report file " << get_warnings_report_file_name() << " for more details. A shorter time step may be needed.\n" <<
         "Additional details may be found in " << get_rxn_report_file_name() <<
         ", if it does not exist, it can be enabled by setting 'rxn_and_species_report' to true.\n";
 
+    cerr << ss.str() << "\n";
+    append_to_report(get_warnings_report_file_name(), ss.str());
   }
   if (warnings.warn_on_bimol_rxn_probability_over_05_less_1 &&
       warnings.bimol_rxn_probability_over_05_less_1) {
-    cerr <<
+    stringstream ss;
+    ss <<
         "Warning: There was a bimolecular reaction with probability p > 0.5 and p < 1.0. " <<
         "For best results, the probability of bimolecular reactions should be <= 0.5. " <<
         "See report file " << get_rxn_report_file_name() <<
         ", if it does not exist, it can be enabled by setting 'rxn_and_species_report' to true.\n";
+    cerr << ss.str() << "\n";
+    append_to_report(get_warnings_report_file_name(), ss.str());
   }
 }
 
