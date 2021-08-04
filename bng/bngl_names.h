@@ -41,6 +41,7 @@ const char* const COMPLEX_trash = "trash";
 
 const char* const ITERATIONS = "ITERATIONS";
 
+const char* const BNG_UNITS = "BNG_UNITS";
 const char* const MCELL_TIME_STEP = "MCELL_TIME_STEP";
 
 const char* const MCELL_DIFFUSION_CONSTANT_3D_PREFIX = "MCELL_DIFFUSION_CONSTANT_3D_";
