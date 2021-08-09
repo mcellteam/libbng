@@ -34,28 +34,7 @@ namespace BNG {
 
 
 // used in set to represent edges
-class UnorderedPair {
-public:
-  UnorderedPair(const vertex_descriptor_t a, const vertex_descriptor_t b) : first(std::min(a,b)), second(std::max(a,b)) {
-  }
-  bool operator == (const UnorderedPair& b) const {
-    return first == b.first && second == b.second;
-  }
-  bool operator < (const UnorderedPair& b) const {
-    if (first < b.first) {
-      return true;
-    }
-    else if (first == b.first) {
-      return second < b.second;
-    }
-    else {
-      return false;
-    }
-  }
-
-  vertex_descriptor_t first;
-  vertex_descriptor_t second;
-};
+typedef UnorderedPair<vertex_descriptor_t> VertDescUnorderedPair;
 
 
 static void merge_graphs(Graph& srcdst, const Graph& src) {
@@ -788,7 +767,7 @@ static void add_new_products(
     const VertexNameMap& products_index
 ) {
   // this set will contain a pair of product graph_descriptors for bonds between components
-  set<UnorderedPair> product_bonds_to_add_to_reactants;
+  set<VertDescUnorderedPair> product_bonds_to_add_to_reactants;
 
   // we also create a new mapping directly from all products onto reactants (bypassing patterns)
   VertexMapping product_reactant_mapping;
@@ -823,7 +802,7 @@ static void add_new_products(
         vertex_descriptor_t prod_bond_target = get_bond_target(products_graph, prod_comp_desc, false);
         if (prod_bond_target != TARGET_NOT_FOUND) {
           // the target component might have not been created, so we must remember to make the bond later
-          product_bonds_to_add_to_reactants.insert(UnorderedPair(prod_comp_desc, prod_bond_target));
+          product_bonds_to_add_to_reactants.insert(VertDescUnorderedPair(prod_comp_desc, prod_bond_target));
         }
       }
     }
@@ -907,8 +886,8 @@ static void apply_rxn_on_reactants_graph(
   // by products
   mark_consumed_reactants(reactants_graph, pattern_reactant_mapping, product_pattern_mapping);
 
-  set<UnorderedPair> bonds_to_remove;
-  set<UnorderedPair> bonds_to_add;
+  set<VertDescUnorderedPair> bonds_to_remove;
+  set<VertDescUnorderedPair> bonds_to_add;
 
   //
   // for each component in product graph:
@@ -956,7 +935,7 @@ static void apply_rxn_on_reactants_graph(
         if (reac_ci.bond_value == BOND_VALUE_BOUND) {
           // new: (no bond)
           if (prod_ci.bond_value == BOND_VALUE_UNBOUND) {
-            bonds_to_remove.insert(UnorderedPair(
+            bonds_to_remove.insert(VertDescUnorderedPair(
                 reac_desc,
                 get_bond_target(reactants_graph, reac_desc)
             ));
@@ -986,7 +965,7 @@ static void apply_rxn_on_reactants_graph(
             // target does not have to exist when this is a new product,
             // it will be added to the reactants graph later
             if (target_reac_desc != TARGET_NOT_FOUND) {
-              bonds_to_add.insert(UnorderedPair(reac_desc, target_reac_desc));
+              bonds_to_add.insert(VertDescUnorderedPair(reac_desc, target_reac_desc));
             }
 
             reac_node.modified_ordering_index = reac_node.ordering_index;
@@ -1003,7 +982,7 @@ static void apply_rxn_on_reactants_graph(
         else if (reac_ci.bond_has_numeric_value()) {
           // new: (no bond)
           if (prod_ci.bond_value == BOND_VALUE_UNBOUND) {
-            bonds_to_remove.insert(UnorderedPair(
+            bonds_to_remove.insert(VertDescUnorderedPair(
                 reac_desc,
                 get_bond_target(reactants_graph, reac_desc)
             ));
@@ -1015,7 +994,7 @@ static void apply_rxn_on_reactants_graph(
             assert(prod_ci.bond_value != reac_ci.bond_value);
             // remove original one
             vertex_descriptor_t orig_target_desc = get_bond_target(reactants_graph, reac_desc);
-            bonds_to_remove.insert(UnorderedPair(
+            bonds_to_remove.insert(VertDescUnorderedPair(
                 reac_desc,
                 orig_target_desc
             ));
@@ -1031,7 +1010,7 @@ static void apply_rxn_on_reactants_graph(
             // target does not have to exist when this is a new product,
             // it will be added to the reactants graph later
             if (target_reac_desc != TARGET_NOT_FOUND) {
-              bonds_to_add.insert(UnorderedPair(reac_desc, target_reac_desc));
+              bonds_to_add.insert(VertDescUnorderedPair(reac_desc, target_reac_desc));
             }
 
             // a change occurs only when the target is different
@@ -1117,7 +1096,7 @@ static bool convert_graph_component_to_product_cplx_inst(
 
   VertexNameMap index = boost::get(boost::vertex_name, graph);
 
-  map<UnorderedPair, int> bonds;
+  map<VertDescUnorderedPair, int> bonds;
 
   // for each molecule instance
   typedef boost::graph_traits<Graph>::vertex_iterator vertex_iter;
@@ -1170,7 +1149,7 @@ static bool convert_graph_component_to_product_cplx_inst(
         compi.bond_value = BOND_VALUE_UNBOUND;
       }
       else {
-        UnorderedPair bond(comp_desc, bound_comp_desc);
+        VertDescUnorderedPair bond(comp_desc, bound_comp_desc);
         auto it = bonds.find(bond);
         if (it != bonds.end()) {
           compi.bond_value = it->second;

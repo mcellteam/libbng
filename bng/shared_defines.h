@@ -461,4 +461,29 @@ void uint_set<Key>::dump(const std::string comment) const {
 }
 
 
+template<typename T>
+class UnorderedPair {
+public:
+  UnorderedPair(const T a, const T b) : first(std::min(a,b)), second(std::max(a,b)) {
+  }
+  bool operator == (const UnorderedPair<T>& b) const {
+    return first == b.first && second == b.second;
+  }
+  bool operator < (const UnorderedPair<T>& b) const {
+    if (first < b.first) {
+      return true;
+    }
+    else if (first == b.first) {
+      return second < b.second;
+    }
+    else {
+      return false;
+    }
+  }
+
+  T first;
+  T second;
+};
+
+
 #endif // __BNG_DEFINES_SHARED_H__
