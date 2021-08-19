@@ -136,7 +136,7 @@ RxnClass* RxnContainer::get_or_create_empty_unimol_rxn_class(const species_id_t 
 }
 
 
-void RxnContainer::create_unimol_rxn_classes_for_new_species(const species_id_t species_id) {
+void RxnContainer::create_unimol_rxn_class_for_new_species(const species_id_t species_id) {
 
   // find all reactions for species id
   small_vector<RxnRule*> rxns_for_new_species;
@@ -441,7 +441,7 @@ void RxnContainer::delete_rxn_class(RxnClass* rxn_class) {
 }
 
 
-void RxnContainer::remove_unimol_rxn_classes(const species_id_t id) {
+void RxnContainer::remove_unimol_rxn_class(const species_id_t id) {
   if (species_processed_for_unimol_rxn_classes.count(id) != 0) {
     // forget that we processed this species
     species_processed_for_unimol_rxn_classes.erase(id);

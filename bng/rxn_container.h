@@ -116,7 +116,7 @@ public:
     // reaction maps get updated only when needed, it is not associated with addition of a new species
     // the assumption is that, after some simulation time elapsed, this will be fairly stable
     if (species_processed_for_unimol_rxn_classes.count(id) == 0) {
-      create_unimol_rxn_classes_for_new_species(id);
+      create_unimol_rxn_class_for_new_species(id);
       it = unimol_rxn_class_map.find(id);
     }
 
@@ -133,7 +133,7 @@ public:
   }
   
   // frees up memory taken up by the species' rxn class that is no longer needed
-  void remove_unimol_rxn_classes(const species_id_t id);
+  void remove_unimol_rxn_class(const species_id_t id);
 
   // - simply looks up a reaction between 'a' and 'b',
   // - this reaction must exist, asserts if not,
@@ -287,7 +287,7 @@ private:
   RxnClass* get_or_create_empty_unimol_rxn_class(const species_id_t reac_id);
   RxnClass* get_or_create_empty_bimol_rxn_class(const species_id_t reac1_id, const species_id_t reac2_id);
 
-  void create_unimol_rxn_classes_for_new_species(const species_id_t species_id);
+  void create_unimol_rxn_class_for_new_species(const species_id_t species_id);
   void create_bimol_rxn_classes_for_new_species(const species_id_t species_id, const bool for_all_known_species);
 
   void delete_rxn_class(RxnClass* rxn_class);
