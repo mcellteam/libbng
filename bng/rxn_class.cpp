@@ -221,7 +221,7 @@ double RxnClass::compute_pb_factor() const {
 
   // mcell3 divides the radius after reaction initialization,
   // we already have the value that was divided
-  double rx_radius_3d_mul_length_unit = bng_config.rx_radius_3d * bng_config.length_unit;
+  double rx_radius_3d_mul_length_unit = bng_config.rxn_radius_3d * bng_config.length_unit;
 
   small_vector<const Species*> reactant_species;
   for (uint n_reactant = 0; n_reactant < reactant_ids.size(); n_reactant++) {

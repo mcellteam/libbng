@@ -94,8 +94,8 @@ public:
     length_unit(0),
     rcp_length_unit(0),
     grid_density(0),
-    rx_radius_3d(0),
-    intermembrane_rx_radius_3d(0),
+    rxn_radius_3d(0),
+    intermembrane_rxn_radius_3d(0),
     rxn_and_species_report(true),
 	  debug_requires_diffusion_constants(false)
     {
@@ -124,8 +124,8 @@ public:
   BNGCommon::pos_t length_unit;
   BNGCommon::pos_t rcp_length_unit;
   BNGCommon::pos_t grid_density;
-  BNGCommon::pos_t rx_radius_3d;
-  BNGCommon::pos_t intermembrane_rx_radius_3d;
+  BNGCommon::pos_t rxn_radius_3d;
+  BNGCommon::pos_t intermembrane_rxn_radius_3d;
 
   // generate report files during simulation
   bool rxn_and_species_report;
@@ -152,7 +152,7 @@ public:
 
   void dump() const;
 
-  BNGCommon::pos_t get_default_rx_radius_3d() const;
+  BNGCommon::pos_t get_default_rxn_radius_3d() const;
 
 protected:
   std::string seed_as_str() const;

@@ -29,7 +29,7 @@ void BNGNotifications::dump() const {
 }
 
 
-BNGCommon::pos_t BNGConfig::get_default_rx_radius_3d() const {
+BNGCommon::pos_t BNGConfig::get_default_rxn_radius_3d() const {
   return (1.0 / sqrt_f(BNG_PI * grid_density)) / length_unit;
 }
 
@@ -40,7 +40,7 @@ void BNGConfig::dump() const {
   cout << "  time_unit: \t\t" << time_unit << "\n";
   cout << "  length_unit: \t\t" << length_unit << "\n";
   cout << "  grid_density: \t\t" << grid_density << "\n";
-  cout << "  rx_radius_3d: \t\t" << rx_radius_3d << "\n";
+  cout << "  rx_radius_3d: \t\t" << rxn_radius_3d << "\n";
   cout << "  rxn_and_species_report: \t\t" << rxn_and_species_report << "\n";
   // TODO: add dumps for BNGNotificatiosn and BNGWarnings
 
