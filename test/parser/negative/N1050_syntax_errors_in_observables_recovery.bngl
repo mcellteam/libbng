@@ -1,0 +1,26 @@
+# FAIL
+# OUTPUT: 9: error: syntax error, unexpected '!'
+# OUTPUT: 19: error: syntax error, unexpected ->
+# OUTPUT: 23: error: syntax error, unexpected '@'
+
+
+
+begin observables
+   Molecules a b !
+
+
+   
+   
+   Moleculex a b c  # not a syntax error, only semantic
+
+
+
+   
+   Molecules a -> b 
+   
+   
+   
+   @aa a b
+   
+   
+end observables

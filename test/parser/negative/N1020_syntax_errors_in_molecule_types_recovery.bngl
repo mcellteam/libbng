@@ -1,0 +1,19 @@
+# FAIL
+# OUTPUT: 8: error: syntax error, unexpected identifier
+# OUTPUT: 12: error: syntax error, unexpected newline
+# OUTPUT: 14: error: syntax error, unexpected invalid token
+# OUTPUT: 17: error: syntax error, unexpected '.'
+
+begin molecule types
+   a b
+   
+   
+   a(#s)
+   
+   
+   d($as)
+
+   
+   a(b~1~2).c
+
+end molecule types

@@ -1,0 +1,18 @@
+# FAIL
+# OUTPUT: 9: error: syntax error, unexpected identifier
+# OUTPUT: 12: error: syntax error, unexpected identifier
+# OUTPUT: 15: error: syntax error, unexpected '@'
+
+
+
+begin compartments
+   C1 X
+
+   
+   C1 X 5 Z Z
+
+   
+   @C1 2 5 
+
+   
+end compartments

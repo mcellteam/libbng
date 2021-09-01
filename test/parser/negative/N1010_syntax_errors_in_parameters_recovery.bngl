@@ -1,0 +1,19 @@
+# FAIL
+# OUTPUT: 7: error: syntax error, unexpected identifier
+# OUTPUT: 9: error: syntax error, unexpected identifier
+# OUTPUT: 13: error: syntax error, unexpected integer constant
+# OUTPUT: 17: error: syntax error, unexpected integer constant
+begin parameters  # note: the reason for newlines in between is that bison is silent and must read some tokens before another error message 
+   a 5 zzz
+   
+   z 6 xxx
+   
+   
+   
+   5
+
+
+
+   l 7 123
+
+end parameters

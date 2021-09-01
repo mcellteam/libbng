@@ -1,0 +1,23 @@
+# FAIL
+# OUTPUT: 9: error: syntax error, unexpected newline
+# OUTPUT: 12: error: syntax error, unexpected ->
+# OUTPUT: 17: error: syntax error, unexpected ->
+# OUTPUT: 21: error: syntax error, unexpected identifier
+
+begin reaction rules
+   a + b ->
+
+
+
+   ->
+
+
+
+
+   -> a 5
+
+
+
+   a + b -> x d e
+
+end reaction rules

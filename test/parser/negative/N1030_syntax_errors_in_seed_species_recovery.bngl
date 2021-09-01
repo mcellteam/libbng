@@ -1,0 +1,18 @@
+# FAIL
+# OUTPUT: 8: error: syntax error, unexpected '!'
+# OUTPUT: 11: error: syntax error, unexpected invalid token
+# OUTPUT: 13: error: syntax error, unexpected '~'
+# OUTPUT: 16: error: syntax error, unexpected identifier
+
+begin seed species
+   a !
+
+
+   d($as) 1
+
+   a(b~1~2)  2 
+   
+   
+   a(b~1)  2  z
+
+end seed species

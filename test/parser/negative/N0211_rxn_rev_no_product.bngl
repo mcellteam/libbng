@@ -1,5 +1,5 @@
 # FAIL
-# OUTPUT: error: syntax error, unexpected <->, expecting end
+# OUTPUT: error: syntax error, unexpected <->, expecting
 
 begin parameters
    kp 0.00001

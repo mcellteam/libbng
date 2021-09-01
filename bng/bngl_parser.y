@@ -61,7 +61,7 @@ namespace BNG {
 // write out a header file containing the token defines 
 %defines
 
-%error-verbose
+%define parse.error verbose
 
 // set up function name prefixes and output file name 
 %define api.prefix {bngl}
@@ -218,7 +218,7 @@ section:
     | TOK_BEGIN TOK_SPECIES nls seed_species_list_maybe_empty TOK_END TOK_SPECIES
     | TOK_BEGIN TOK_OBSERVABLES nls observables_list_maybe_empty TOK_END TOK_OBSERVABLES
     | TOK_BEGIN TOK_ACTIONS nls action_call_list_maybe_empty TOK_END TOK_ACTIONS
-    | action_call    
+    | action_call
 ;
 
 // ---------------- parameters ------------------- 
@@ -239,6 +239,7 @@ parameter:
     | TOK_ID '=' expr nls {
         g_ctx->symtab.insert($1, $3, g_ctx);
       }
+    | error nls
 ;
       
 // ---------------- molecules -------------------     
@@ -268,6 +269,9 @@ molecule_type:
     | TOK_ID nls {
         // no components neither parentheses
         $$ = g_ctx->new_molecule_node($1, g_ctx->new_list_node(), nullptr, @1);    
+      }
+    | error nls {
+        $$ = g_ctx->new_molecule_node(SYNTAX_ERROR, g_ctx->new_list_node(), nullptr, @1);
       }
 ;
 
@@ -343,6 +347,7 @@ compartment_decl:
             g_ctx->new_compartment_node($1, $2, $3, "", @1)
         );
     }
+    | error nls
 ;    
 	    
 // ---------------- rxn_rules ------------------- 
@@ -362,6 +367,7 @@ rxn_rule:
         BNG::ASTRxnRuleNode* n = g_ctx->new_rxn_rule_node($1, $2, $3, $4, $5);
         g_ctx->add_rxn_rule(n);
       }
+    | error nls
 ;
 
 rxn_rule_name_maybe_empty:
@@ -434,6 +440,7 @@ seed_species_item:
         BNG::ASTSeedSpeciesNode* n = g_ctx->new_seed_species_node($1, $2); 
         g_ctx->add_seed_species(n);
       }
+    | error nls
 ;
 
 
@@ -550,6 +557,7 @@ observables_item:
         BNG::ASTObservableNode* n = g_ctx->new_observable_node($1, $2, $3, @1); 
         g_ctx->add_observable(n);
       }
+    | error nls    
 ;
 
 cplx_list:

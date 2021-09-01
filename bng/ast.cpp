@@ -184,6 +184,11 @@ void ASTObservableNode::dump(const std::string ind) const {
 
 // ------------------------------- ASTSymbolTable ------------------------
 void ASTSymbolTable::insert(const std::string id, ASTBaseNode* node, ParserContext* ctx) {
+  if (id == SYNTAX_ERROR) {
+    // ignore
+    return;
+  }
+
   if (table.count(id) != 0) {
     errs_loc() << "Symbol '" << id << "' was already defined.\n";
     ctx->inc_error_count();

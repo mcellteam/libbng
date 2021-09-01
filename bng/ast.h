@@ -34,6 +34,10 @@ struct BNGLLTYPE
 # define BNGLLTYPE_IS_DECLARED 1
 #endif
 
+// unique name for tokens created when there is a syntax error
+// chosen so that it is not an allowed ID
+const char* const SYNTAX_ERROR = "!syntax error";
+
 namespace BNG {
 
 class ParserContext;
