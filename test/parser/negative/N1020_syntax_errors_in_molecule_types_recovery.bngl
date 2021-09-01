@@ -1,7 +1,7 @@
 # FAIL
 # OUTPUT: 8: error: syntax error, unexpected identifier
 # OUTPUT: 12: error: syntax error, unexpected newline
-# OUTPUT: 14: error: syntax error, unexpected invalid token
+# OUTPUT: 14: error: syntax error, unexpected
 # OUTPUT: 17: error: syntax error, unexpected '.'
 
 begin molecule types

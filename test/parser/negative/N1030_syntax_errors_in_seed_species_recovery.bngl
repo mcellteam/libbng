@@ -1,6 +1,6 @@
 # FAIL
 # OUTPUT: 8: error: syntax error, unexpected '!'
-# OUTPUT: 11: error: syntax error, unexpected invalid token
+# OUTPUT: 11: error: syntax error, unexpected 
 # OUTPUT: 13: error: syntax error, unexpected '~'
 # OUTPUT: 16: error: syntax error, unexpected identifier
 
