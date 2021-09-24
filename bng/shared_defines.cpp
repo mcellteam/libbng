@@ -9,6 +9,16 @@
 
 #include "bng/shared_defines.h"
 
+#ifdef _MSC_VER
+// we are not linking boost and this is needed on Windows
+#include <exception>
+namespace boost {
+void __cdecl throw_exception(std::exception& const e) {
+    throw e;
+}
+}
+#endif
+
 namespace BNGCommon {
 
 std::string f_to_str(const double val, const int n) {
