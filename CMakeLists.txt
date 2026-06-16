@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.4)
+cmake_minimum_required(VERSION 3.25...4.3)
 
 if(MSVC)
   # compilation option required for MSVC

@@ -1,23 +1,8 @@
-cmake_minimum_required(VERSION 2.8.4)
+cmake_minimum_required(VERSION 3.25...4.3)
 
-project(libbng)
+project(libbng CXX)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../libs/nauty ${CMAKE_CURRENT_BINARY_DIR}/nauty)
-
-include_directories(
-	"${CMAKE_CURRENT_SOURCE_DIR}"
-	"${CMAKE_CURRENT_SOURCE_DIR}/.."
-	"${CMAKE_CURRENT_BINARY_DIR}/deps"
-	"${CMAKE_CURRENT_SOURCE_DIR}/../libs/sparsehash/src/"
-	"${CMAKE_CURRENT_SOURCE_DIR}/../libs/"
-)
-
-add_definitions(-DYY_NO_UNISTD_H)
-
-if (NOT WIN32) 
-  add_definitions(-std=c++17)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-function -Wall -isystem ${CMAKE_SOURCE_DIR}/../libs/ -isystem ${CMAKE_SOURCE_DIR}/../libs/sparsehash/src")
-endif()
 
 set(SOURCE_FILES
   shared_defines.cpp
@@ -74,15 +59,51 @@ if (NOT WIN32 AND NOT APPLE)
 endif()
 
 add_library(${PROJECT_NAME} ${ALL_SOURCES})
-target_link_libraries(${PROJECT_NAME}
-	PRIVATE nauty ${STDC_FS}
+add_library(BNG::bng ALIAS ${PROJECT_NAME})
+
+# Usage requirements: anything that links libbng inherits these include dirs,
+# the C++17 standard and the YY_NO_UNISTD_H definition.
+target_include_directories(${PROJECT_NAME}
+	PUBLIC
+		${CMAKE_CURRENT_SOURCE_DIR}        # libbng/bng
+		${CMAKE_CURRENT_SOURCE_DIR}/..     # libbng/  (consumers use "bng/...")
+	PRIVATE
+		${CMAKE_CURRENT_BINARY_DIR}/deps   # generated flex/bison headers
+)
+# sparsehash and the bundled libs are third-party; mark them SYSTEM so their
+# warnings do not pollute consumers.
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
+	${CMAKE_CURRENT_SOURCE_DIR}/../libs
+	${CMAKE_CURRENT_SOURCE_DIR}/../libs/sparsehash/src
 )
 
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
+target_compile_definitions(${PROJECT_NAME} PRIVATE YY_NO_UNISTD_H)
+target_compile_options(${PROJECT_NAME} PRIVATE
+	$<$<NOT:$<PLATFORM_ID:Windows>>:-Wall;-Wno-unused-function>)
+
+target_link_libraries(${PROJECT_NAME}
+	PRIVATE Nauty::nauty ${STDC_FS}
+)
+
+# Development-only tool: it recompiles all libbng sources alongside test.cpp
+# (it does NOT link libbng, which would duplicate every symbol), so it needs
+# the same include dirs / definitions spelled out explicitly.
 add_executable(parser_tester_${PROJECT_NAME}
   ${ALL_SOURCES}
 	test.cpp # only for development
 )
+target_include_directories(parser_tester_${PROJECT_NAME}
+	PRIVATE
+		${CMAKE_CURRENT_SOURCE_DIR}
+		${CMAKE_CURRENT_SOURCE_DIR}/..
+		${CMAKE_CURRENT_BINARY_DIR}/deps)
+target_include_directories(parser_tester_${PROJECT_NAME} SYSTEM PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/../libs
+	${CMAKE_CURRENT_SOURCE_DIR}/../libs/sparsehash/src)
+target_compile_features(parser_tester_${PROJECT_NAME} PRIVATE cxx_std_17)
+target_compile_definitions(parser_tester_${PROJECT_NAME} PRIVATE YY_NO_UNISTD_H)
 
 target_link_libraries(parser_tester_${PROJECT_NAME}
-	PUBLIC nauty ${STDC_FS}
+	PUBLIC Nauty::nauty ${STDC_FS}
 )
